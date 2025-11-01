@@ -17,9 +17,11 @@ interface ChatSidebarProps {
   currentChatId: string | null;
   onChatSelect: (id: string) => void;
   userId: string;
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-const ChatSidebar = ({ currentChatId, onChatSelect, userId }: ChatSidebarProps) => {
+const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: ChatSidebarProps) => {
   const [chats, setChats] = useState<Chat[]>([]);
   const [darkMode, setDarkMode] = useState(true);
   const navigate = useNavigate();
@@ -140,52 +142,73 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId }: ChatSidebarProps) 
     toast.success("Logged out successfully");
   };
 
+  const handleSelectChat = (id: string) => {
+    onChatSelect(id);
+    onClose();
+  };
+
   return (
-    <div className="w-64 border-r border-border glass-panel flex flex-col">
-      <div className="p-4 border-b border-border">
-        <Button
-          onClick={handleNewChat}
-          className="w-full justify-start gap-2"
-          style={{ background: "var(--gradient-primary)" }}
-        >
-          <Plus className="w-4 h-4" />
-          New Chat
-        </Button>
-      </div>
+    <>
+      {/* Mobile overlay */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          onClick={onClose}
+        />
+      )}
+      
+      {/* Sidebar */}
+      <div className={`
+        fixed md:relative inset-y-0 left-0 z-50
+        w-64 border-r border-border glass-panel flex flex-col
+        transform transition-transform duration-300 ease-in-out
+        ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+      `}>
+        <div className="p-4 border-b border-border md:hidden">
+          <Button
+            onClick={handleNewChat}
+            className="w-full justify-start gap-2"
+            style={{ background: "var(--gradient-primary)" }}
+          >
+            <Plus className="w-4 h-4" />
+            New Chat
+          </Button>
+        </div>
 
-      <ScrollArea className="flex-1 p-2">
-        {chats.map((chat) => (
-          <ChatItem
-            key={chat.id}
-            chat={chat}
-            isActive={currentChatId === chat.id}
-            onSelect={() => onChatSelect(chat.id)}
-            onDelete={() => handleDeleteChat(chat.id)}
-            onRename={(newTitle) => handleRenameChat(chat.id, newTitle)}
-            onDuplicate={() => handleDuplicateChat(chat.id)}
-          />
-        ))}
-      </ScrollArea>
+        <ScrollArea className="flex-1 p-2">
+          {chats.map((chat) => (
+            <ChatItem
+              key={chat.id}
+              chat={chat}
+              isActive={currentChatId === chat.id}
+              onSelect={() => handleSelectChat(chat.id)}
+              onDelete={() => handleDeleteChat(chat.id)}
+              onRename={(newTitle) => handleRenameChat(chat.id, newTitle)}
+              onDuplicate={() => handleDuplicateChat(chat.id)}
+            />
+          ))}
+        </ScrollArea>
 
-      <div className="p-4 border-t border-border space-y-2">
-        <Button
-          variant="ghost"
-          className="w-full justify-start gap-2"
-          onClick={() => setDarkMode(!darkMode)}
-        >
-          {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-          {darkMode ? "Light Mode" : "Dark Mode"}
-        </Button>
-        <Button
-          variant="ghost"
-          className="w-full justify-start gap-2 text-destructive hover:text-destructive"
-          onClick={handleLogout}
-        >
-          <LogOut className="w-4 h-4" />
-          Logout
-        </Button>
+        <div className="p-4 border-t border-border space-y-2">
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-2"
+            onClick={() => setDarkMode(!darkMode)}
+          >
+            {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            {darkMode ? "Light Mode" : "Dark Mode"}
+          </Button>
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-2 text-destructive hover:text-destructive"
+            onClick={handleLogout}
+          >
+            <LogOut className="w-4 h-4" />
+            Logout
+          </Button>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

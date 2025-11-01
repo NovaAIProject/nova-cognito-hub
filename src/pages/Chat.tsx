@@ -12,6 +12,7 @@ const Chat = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -47,19 +48,40 @@ const Chat = () => {
     return null;
   }
 
+  const handleNewChat = async () => {
+    const { data, error } = await supabase
+      .from("chats")
+      .insert([{ user_id: session.user.id, title: "New Chat" }])
+      .select()
+      .single();
+
+    if (error) {
+      toast.error("Failed to create chat");
+      return;
+    }
+
+    setCurrentChatId(data.id);
+    toast.success("New chat created");
+  };
+
   return (
     <div className="flex h-screen bg-background overflow-hidden">
       <ChatSidebar
         currentChatId={currentChatId}
         onChatSelect={setCurrentChatId}
         userId={session.user.id}
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
       />
       
       <div className="flex-1 flex flex-col relative">
         <div className="absolute inset-0" style={{ background: "var(--gradient-mesh)" }} />
         
         <div className="relative z-10 flex flex-col h-full">
-          <ChatHeader />
+          <ChatHeader 
+            onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+            onNewChat={handleNewChat}
+          />
           
           <ChatMessages chatId={currentChatId} />
           
