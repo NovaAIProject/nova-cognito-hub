@@ -1,0 +1,187 @@
+import { useState, useRef } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Send, Mic, Square, Image as ImageIcon } from "lucide-react";
+import { toast } from "sonner";
+
+interface ChatInputProps {
+  chatId: string | null;
+  onChatCreated: (id: string) => void;
+  userId: string;
+}
+
+const ChatInput = ({ chatId, onChatCreated, userId }: ChatInputProps) => {
+  const [message, setMessage] = useState("");
+  const [model, setModel] = useState("google/gemini-2.5-flash");
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const handleSend = async () => {
+    if (!message.trim() || isGenerating) return;
+
+    let currentChatId = chatId;
+
+    if (!currentChatId) {
+      const { data, error } = await supabase
+        .from("chats")
+        .insert([{ user_id: userId, title: message.substring(0, 50) }])
+        .select()
+        .single();
+
+      if (error || !data) {
+        toast.error("Failed to create chat");
+        return;
+      }
+
+      currentChatId = data.id;
+      onChatCreated(currentChatId);
+    }
+
+    const userMessage = message;
+    setMessage("");
+    setIsGenerating(true);
+
+    try {
+      const { error: userMsgError } = await supabase.from("messages").insert([
+        {
+          chat_id: currentChatId,
+          role: "user",
+          content: userMessage,
+        },
+      ]);
+
+      if (userMsgError) throw userMsgError;
+
+      const response = await fetch(
+        `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          },
+          body: JSON.stringify({
+            message: userMessage,
+            model: model,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to get AI response");
+      }
+
+      const data = await response.json();
+
+      await supabase.from("messages").insert([
+        {
+          chat_id: currentChatId,
+          role: "assistant",
+          content: data.response,
+          model: model,
+        },
+      ]);
+    } catch (error: any) {
+      toast.error(error.message || "Failed to send message");
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  const handleStopGenerating = () => {
+    setIsGenerating(false);
+    toast.info("Generation stopped");
+  };
+
+  return (
+    <div className="border-t border-border glass-panel p-4">
+      <div className="max-w-3xl mx-auto space-y-3">
+        <div className="flex items-center gap-2">
+          <Select value={model} onValueChange={setModel}>
+            <SelectTrigger className="w-48">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="openai/gpt-5">GPT-5</SelectItem>
+              <SelectItem value="google/gemini-2.5-flash">
+                Gemini 2.5 Flash
+              </SelectItem>
+              <SelectItem value="google/gemini-2.5-pro">
+                Gemini 2.5 Pro
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="flex gap-2">
+          <div className="flex-1 relative">
+            <Textarea
+              ref={textareaRef}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={handleKeyPress}
+              placeholder="Type your message..."
+              className="min-h-[80px] resize-none pr-20"
+              disabled={isGenerating}
+            />
+            <div className="absolute bottom-2 right-2 flex gap-1">
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-8 w-8 p-0"
+                onClick={() => toast.info("Voice input coming soon!")}
+              >
+                <Mic className="w-4 h-4" />
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-8 w-8 p-0"
+                onClick={() => toast.info("Image generation coming soon!")}
+              >
+                <ImageIcon className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+
+          {isGenerating ? (
+            <Button
+              onClick={handleStopGenerating}
+              variant="destructive"
+              className="h-[80px]"
+            >
+              <Square className="w-4 h-4" />
+            </Button>
+          ) : (
+            <Button
+              onClick={handleSend}
+              disabled={!message.trim()}
+              className="h-[80px]"
+              style={{ background: "var(--gradient-primary)" }}
+            >
+              <Send className="w-4 h-4" />
+            </Button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ChatInput;
