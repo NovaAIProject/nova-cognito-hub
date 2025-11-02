@@ -29,23 +29,15 @@ const Index = () => {
             <Button
               onClick={() => navigate("/auth")}
               size="lg"
-              className="text-lg px-8 py-6"
-              style={{ background: "var(--gradient-primary)" }}
-            >
-              Get Started
-            </Button>
-            <Button
-              onClick={() => navigate("/auth")}
-              size="lg"
               variant="outline"
-              className="text-lg px-8 py-6"
+              className="text-lg px-8 py-6 hover-scale smooth-transition"
             >
               Sign In
             </Button>
           </div>
 
           <div className="grid md:grid-cols-3 gap-6 mt-16">
-            <div className="glass-panel rounded-xl p-6 smooth-transition hover:shadow-smooth">
+            <div className="glass-panel rounded-xl p-6 smooth-transition hover:shadow-smooth hover-scale animate-fade-in">
               <Zap className="w-8 h-8 mb-4 text-primary" />
               <h3 className="font-semibold text-lg mb-2">Lightning Fast</h3>
               <p className="text-sm text-muted-foreground">
@@ -53,7 +45,7 @@ const Index = () => {
               </p>
             </div>
             
-            <div className="glass-panel rounded-xl p-6 smooth-transition hover:shadow-smooth">
+            <div className="glass-panel rounded-xl p-6 smooth-transition hover:shadow-smooth hover-scale animate-fade-in">
               <Shield className="w-8 h-8 mb-4 text-primary" />
               <h3 className="font-semibold text-lg mb-2">Secure & Private</h3>
               <p className="text-sm text-muted-foreground">
@@ -61,7 +53,7 @@ const Index = () => {
               </p>
             </div>
             
-            <div className="glass-panel rounded-xl p-6 smooth-transition hover:shadow-smooth">
+            <div className="glass-panel rounded-xl p-6 smooth-transition hover:shadow-smooth hover-scale animate-fade-in">
               <Cpu className="w-8 h-8 mb-4 text-primary" />
               <h3 className="font-semibold text-lg mb-2">Powerful AI</h3>
               <p className="text-sm text-muted-foreground">

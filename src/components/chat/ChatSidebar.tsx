@@ -152,7 +152,7 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
       {/* Mobile overlay */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          className="fixed inset-0 bg-black/50 z-40 md:hidden animate-fade-in"
           onClick={onClose}
         />
       )}
@@ -167,7 +167,7 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
         <div className="p-4 border-b border-border md:hidden">
           <Button
             onClick={handleNewChat}
-            className="w-full justify-start gap-2"
+            className="w-full justify-start gap-2 hover-scale smooth-transition"
             style={{ background: "var(--gradient-primary)" }}
           >
             <Plus className="w-4 h-4" />
@@ -192,7 +192,7 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
         <div className="p-4 border-t border-border space-y-2">
           <Button
             variant="ghost"
-            className="w-full justify-start gap-2"
+            className="w-full justify-start gap-2 smooth-transition hover-scale"
             onClick={() => setDarkMode(!darkMode)}
           >
             {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -200,7 +200,7 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
           </Button>
           <Button
             variant="ghost"
-            className="w-full justify-start gap-2 text-destructive hover:text-destructive"
+            className="w-full justify-start gap-2 text-destructive hover:text-destructive smooth-transition hover-scale"
             onClick={handleLogout}
           >
             <LogOut className="w-4 h-4" />

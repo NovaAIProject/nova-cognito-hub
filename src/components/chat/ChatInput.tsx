@@ -123,7 +123,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="openai/gpt-5">GPT-5</SelectItem>
-              <SelectItem value="anthropic/claude-sonnet-4-5">Claude Sonnet 4.5</SelectItem>
+              <SelectItem value="openai/gpt-5-mini">GPT-5 Mini</SelectItem>
               <SelectItem value="google/gemini-2.5-flash">
                 Gemini 2.5 Flash
               </SelectItem>
@@ -134,7 +134,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
           </Select>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-end">
           <div className="flex-1 relative">
             <Textarea
               ref={textareaRef}
@@ -142,7 +142,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyPress}
               placeholder="Type your message..."
-              className="min-h-[80px] resize-none pr-20"
+              className="min-h-[60px] resize-none pr-20 smooth-transition"
               disabled={isGenerating}
             />
             <div className="absolute bottom-2 right-2 flex gap-1">
@@ -169,7 +169,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
             <Button
               onClick={handleStopGenerating}
               variant="destructive"
-              className="h-[80px]"
+              className="h-[60px] smooth-transition hover-scale"
             >
               <Square className="w-4 h-4" />
             </Button>
@@ -177,7 +177,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
             <Button
               onClick={handleSend}
               disabled={!message.trim()}
-              className="h-[80px]"
+              className="h-[60px] smooth-transition hover-scale disabled:opacity-50"
               style={{ background: "var(--gradient-primary)" }}
             >
               <Send className="w-4 h-4" />

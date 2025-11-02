@@ -8,14 +8,14 @@ interface ChatHeaderProps {
 
 const ChatHeader = ({ onToggleSidebar, onNewChat }: ChatHeaderProps) => {
   return (
-    <header className="border-b border-border glass-panel p-3 md:p-4">
+    <header className="border-b border-border glass-panel p-3 md:p-4 animate-fade-in">
       <div className="flex items-center justify-between gap-3">
         <div className="flex items-center gap-2 md:gap-3">
           <Button
             variant="ghost"
             size="icon"
             onClick={onToggleSidebar}
-            className="md:hidden"
+            className="md:hidden hover-scale smooth-transition"
           >
             <Menu className="w-5 h-5" />
           </Button>
@@ -34,7 +34,7 @@ const ChatHeader = ({ onToggleSidebar, onNewChat }: ChatHeaderProps) => {
         <Button
           onClick={onNewChat}
           size="icon"
-          className="shrink-0"
+          className="shrink-0 hover-scale smooth-transition"
           style={{ background: "var(--gradient-primary)" }}
         >
           <Plus className="w-5 h-5" />
