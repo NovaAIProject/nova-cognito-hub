@@ -13,6 +13,7 @@ const Chat = () => {
   const [loading, setLoading] = useState(true);
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [isGenerating, setIsGenerating] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -83,12 +84,13 @@ const Chat = () => {
             onNewChat={handleNewChat}
           />
           
-          <ChatMessages chatId={currentChatId} />
+          <ChatMessages chatId={currentChatId} isGenerating={isGenerating} />
           
           <ChatInput
             chatId={currentChatId}
             onChatCreated={setCurrentChatId}
             userId={session.user.id}
+            onGeneratingChange={setIsGenerating}
           />
         </div>
       </div>

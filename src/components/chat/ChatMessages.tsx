@@ -13,9 +13,10 @@ interface Message {
 
 interface ChatMessagesProps {
   chatId: string | null;
+  isGenerating?: boolean;
 }
 
-const ChatMessages = ({ chatId }: ChatMessagesProps) => {
+const ChatMessages = ({ chatId, isGenerating }: ChatMessagesProps) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -50,7 +51,7 @@ const ChatMessages = ({ chatId }: ChatMessagesProps) => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, isGenerating]);
 
   const fetchMessages = async () => {
     if (!chatId) return;
@@ -101,6 +102,20 @@ const ChatMessages = ({ chatId }: ChatMessagesProps) => {
         {messages.map((message) => (
           <MessageBubble key={message.id} message={message} />
         ))}
+        {isGenerating && (
+          <div className="flex gap-3 animate-fade-in">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-primary to-accent text-white">
+              <Sparkles className="w-4 h-4" />
+            </div>
+            <div className="glass-panel rounded-2xl p-4 bg-card/50">
+              <div className="flex gap-1">
+                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" style={{ animationDelay: "0ms" }} />
+                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" style={{ animationDelay: "150ms" }} />
+                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" style={{ animationDelay: "300ms" }} />
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </ScrollArea>
   );

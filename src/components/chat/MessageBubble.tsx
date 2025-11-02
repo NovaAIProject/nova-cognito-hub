@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Copy, Check } from "lucide-react";
+import { Copy, Check, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import ReactMarkdown from "react-markdown";
 
 interface Message {
   role: string;
@@ -37,7 +38,7 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
             : "bg-gradient-to-br from-primary to-accent text-white"
         }`}
       >
-        {isUser ? "U" : "AI"}
+        {isUser ? "U" : <Sparkles className="w-4 h-4" />}
       </div>
 
       <div className="group flex-1 space-y-2">
@@ -48,8 +49,8 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
               : "bg-card/50 mr-auto max-w-[90%]"
           }`}
         >
-          <div className="prose prose-sm dark:prose-invert max-w-none">
-            <p className="whitespace-pre-wrap m-0">{message.content}</p>
+          <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:mt-3 prose-headings:mb-2 prose-p:my-2 prose-pre:bg-muted prose-pre:p-3 prose-pre:rounded-lg">
+            <ReactMarkdown>{message.content}</ReactMarkdown>
           </div>
         </div>
 

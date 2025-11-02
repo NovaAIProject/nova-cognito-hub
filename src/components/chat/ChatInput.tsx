@@ -16,9 +16,10 @@ interface ChatInputProps {
   chatId: string | null;
   onChatCreated: (id: string) => void;
   userId: string;
+  onGeneratingChange?: (isGenerating: boolean) => void;
 }
 
-const ChatInput = ({ chatId, onChatCreated, userId }: ChatInputProps) => {
+const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatInputProps) => {
   const [message, setMessage] = useState("");
   const [model, setModel] = useState("google/gemini-2.5-flash");
   const [isGenerating, setIsGenerating] = useState(false);
@@ -49,6 +50,7 @@ const ChatInput = ({ chatId, onChatCreated, userId }: ChatInputProps) => {
     const userMessage = message;
     setMessage("");
     setIsGenerating(true);
+    onGeneratingChange?.(true);
 
     try {
       const { error: userMsgError } = await supabase.from("messages").insert([
@@ -94,6 +96,7 @@ const ChatInput = ({ chatId, onChatCreated, userId }: ChatInputProps) => {
       toast.error(error.message || "Failed to send message");
     } finally {
       setIsGenerating(false);
+      onGeneratingChange?.(false);
     }
   };
 
@@ -106,6 +109,7 @@ const ChatInput = ({ chatId, onChatCreated, userId }: ChatInputProps) => {
 
   const handleStopGenerating = () => {
     setIsGenerating(false);
+    onGeneratingChange?.(false);
     toast.info("Generation stopped");
   };
 
@@ -119,6 +123,7 @@ const ChatInput = ({ chatId, onChatCreated, userId }: ChatInputProps) => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="openai/gpt-5">GPT-5</SelectItem>
+              <SelectItem value="anthropic/claude-sonnet-4-5">Claude Sonnet 4.5</SelectItem>
               <SelectItem value="google/gemini-2.5-flash">
                 Gemini 2.5 Flash
               </SelectItem>
