@@ -168,19 +168,21 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
           {isGenerating ? (
             <Button
               onClick={handleStopGenerating}
-              variant="destructive"
-              className="h-[60px] smooth-transition hover-scale"
+              size="icon"
+              variant="outline"
+              className="h-[60px] w-[60px] rounded-lg border-2 smooth-transition hover-scale hover:bg-destructive/10 hover:border-destructive"
             >
-              <Square className="w-4 h-4" />
+              <Square className="w-5 h-5 fill-current" />
             </Button>
           ) : (
             <Button
               onClick={handleSend}
               disabled={!message.trim()}
-              className="h-[60px] smooth-transition hover-scale disabled:opacity-50"
+              size="icon"
+              className="h-[60px] w-[60px] rounded-lg smooth-transition hover-scale disabled:opacity-50"
               style={{ background: "var(--gradient-primary)" }}
             >
-              <Send className="w-4 h-4" />
+              <Send className="w-5 h-5" />
             </Button>
           )}
         </div>
