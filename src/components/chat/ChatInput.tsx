@@ -142,25 +142,25 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyPress}
               placeholder="Type your message..."
-              className="min-h-[60px] resize-none pr-20 smooth-transition"
+              className="min-h-[50px] resize-none pr-20 smooth-transition"
               disabled={isGenerating}
             />
             <div className="absolute bottom-2 right-2 flex gap-1">
               <Button
                 size="sm"
                 variant="ghost"
-                className="h-8 w-8 p-0"
+                className="h-9 w-9 p-0 hover-scale"
                 onClick={() => toast.info("Voice input coming soon!")}
               >
-                <Mic className="w-4 h-4" />
+                <Mic className="w-5 h-5" />
               </Button>
               <Button
                 size="sm"
                 variant="ghost"
-                className="h-8 w-8 p-0"
+                className="h-9 w-9 p-0 hover-scale"
                 onClick={() => toast.info("Image generation coming soon!")}
               >
-                <ImageIcon className="w-4 h-4" />
+                <ImageIcon className="w-5 h-5" />
               </Button>
             </div>
           </div>
@@ -170,19 +170,19 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
               onClick={handleStopGenerating}
               size="icon"
               variant="outline"
-              className="h-[60px] w-[60px] rounded-lg border-2 smooth-transition hover-scale hover:bg-destructive/10 hover:border-destructive"
+              className="h-[50px] w-[50px] rounded-lg border-2 smooth-transition hover-scale hover:bg-destructive/10 hover:border-destructive"
             >
-              <Square className="w-5 h-5 fill-current" />
+              <Square className="w-4 h-4 fill-current" />
             </Button>
           ) : (
             <Button
               onClick={handleSend}
               disabled={!message.trim()}
               size="icon"
-              className="h-[60px] w-[60px] rounded-lg smooth-transition hover-scale disabled:opacity-50"
+              className="h-[50px] w-[50px] rounded-lg smooth-transition hover-scale disabled:opacity-50"
               style={{ background: "var(--gradient-primary)" }}
             >
-              <Send className="w-5 h-5" />
+              <Send className="w-4 h-4" />
             </Button>
           )}
         </div>

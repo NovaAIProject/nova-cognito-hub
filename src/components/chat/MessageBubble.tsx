@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Copy, Check, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Message {
   role: string;
@@ -16,7 +17,28 @@ interface MessageBubbleProps {
 
 const MessageBubble = ({ message }: MessageBubbleProps) => {
   const [copied, setCopied] = useState(false);
+  const [username, setUsername] = useState<string>("U");
   const isUser = message.role === "user";
+
+  useEffect(() => {
+    if (isUser) {
+      const fetchUsername = async () => {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("username")
+            .eq("user_id", user.id)
+            .single();
+          
+          if (profile?.username) {
+            setUsername(profile.username.charAt(0).toUpperCase());
+          }
+        }
+      };
+      fetchUsername();
+    }
+  }, [isUser]);
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(message.content);
@@ -32,13 +54,13 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
       }`}
     >
       <div
-        className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${
+        className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-semibold ${
           isUser
             ? "bg-primary text-primary-foreground"
             : "bg-gradient-to-br from-primary to-accent text-white"
         }`}
       >
-        {isUser ? "U" : <Sparkles className="w-4 h-4" />}
+        {isUser ? username : <Sparkles className="w-4 h-4" />}
       </div>
 
       <div className="group flex-1 space-y-2">

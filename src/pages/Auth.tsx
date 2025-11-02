@@ -5,12 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
-import { Sparkles, Mail, Lock, Loader2 } from "lucide-react";
+import { Sparkles, Mail, Lock, Loader2, User } from "lucide-react";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -28,11 +29,20 @@ const Auth = () => {
         toast.success("Welcome back!");
         navigate("/chat");
       } else {
+        if (!username.trim()) {
+          toast.error("Username is required");
+          setLoading(false);
+          return;
+        }
+        
         const { error } = await supabase.auth.signUp({
           email,
           password,
           options: {
             emailRedirectTo: `${window.location.origin}/chat`,
+            data: {
+              username: username.trim(),
+            },
           },
         });
         if (error) throw error;
@@ -80,6 +90,24 @@ const Auth = () => {
         </div>
 
         <form onSubmit={handleEmailAuth} className="space-y-4">
+          {!isLogin && (
+            <div className="space-y-2 animate-fade-in">
+              <Label htmlFor="username" className="flex items-center gap-2">
+                <User className="w-4 h-4" />
+                Username
+              </Label>
+              <Input
+                id="username"
+                type="text"
+                placeholder="johndoe"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required={!isLogin}
+                className="smooth-transition"
+              />
+            </div>
+          )}
+
           <div className="space-y-2">
             <Label htmlFor="email" className="flex items-center gap-2">
               <Mail className="w-4 h-4" />
@@ -115,7 +143,7 @@ const Auth = () => {
 
           <Button
             type="submit"
-            className="w-full"
+            className="w-full smooth-transition hover-scale"
             disabled={loading}
             style={{ background: "var(--gradient-primary)" }}
           >
