@@ -37,6 +37,9 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
         if (index < contentWithoutTime.length) {
           setDisplayedContent(contentWithoutTime.slice(0, index + 1));
           index++;
+          // Trigger scroll on parent during animation
+          const event = new CustomEvent('messageUpdate');
+          window.dispatchEvent(event);
         } else {
           clearInterval(interval);
         }

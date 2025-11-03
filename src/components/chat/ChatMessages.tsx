@@ -71,6 +71,15 @@ const ChatMessages = ({ chatId, isGenerating }: ChatMessagesProps) => {
     scrollToBottom();
   }, [messages, isGenerating]);
 
+  useEffect(() => {
+    const handleMessageUpdate = () => {
+      scrollToBottom();
+    };
+    
+    window.addEventListener('messageUpdate', handleMessageUpdate);
+    return () => window.removeEventListener('messageUpdate', handleMessageUpdate);
+  }, []);
+
   const fetchMessages = async () => {
     if (!chatId) return;
 
