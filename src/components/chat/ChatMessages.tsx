@@ -87,7 +87,10 @@ const ChatMessages = ({ chatId, isGenerating }: ChatMessagesProps) => {
 
   const scrollToBottom = () => {
     if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      const viewport = scrollRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (viewport) {
+        viewport.scrollTop = viewport.scrollHeight;
+      }
     }
   };
 
@@ -134,9 +137,9 @@ const ChatMessages = ({ chatId, isGenerating }: ChatMessagesProps) => {
   }
 
   return (
-    <div className="flex-1 overflow-hidden">
+    <div className="flex-1 overflow-hidden" ref={scrollRef}>
       <ScrollArea className="h-full p-4">
-        <div className="max-w-3xl mx-auto space-y-4" ref={scrollRef}>
+        <div className="max-w-3xl mx-auto space-y-4">
           {messages.map((message) => (
             <MessageBubble key={message.id} message={message} />
           ))}

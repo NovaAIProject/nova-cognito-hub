@@ -148,7 +148,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleKeyPress}
-            placeholder="Ask Nova AI"
+            placeholder="Ask Nova AI..."
             className="min-h-[50px] max-h-[50px] resize-none smooth-transition py-3 flex-1"
             disabled={isGenerating}
           />
