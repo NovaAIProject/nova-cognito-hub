@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { message, model = "google/gemini-2.5-flash" } = await req.json();
+    const { message, model = "google/gemini-2.5-flash", generateImage = false } = await req.json();
 
     if (!message) {
       throw new Error("Message is required");
@@ -23,6 +23,26 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
+    const requestBody: any = {
+      model: generateImage ? "google/gemini-2.5-flash-image-preview" : model,
+      messages: [
+        {
+          role: "system",
+          content: generateImage 
+            ? "You are Nova AI. Generate images based on user descriptions."
+            : "You are Nova AI, a helpful and intelligent assistant. Provide clear, concise, and helpful responses. When writing code, always use proper markdown code blocks with language specifications.",
+        },
+        {
+          role: "user",
+          content: message,
+        },
+      ],
+    };
+
+    if (generateImage) {
+      requestBody.modalities = ["image", "text"];
+    }
+
     const response = await fetch(
       "https://ai.gateway.lovable.dev/v1/chat/completions",
       {
@@ -31,20 +51,7 @@ serve(async (req) => {
           Authorization: `Bearer ${LOVABLE_API_KEY}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          model: model,
-          messages: [
-            {
-              role: "system",
-              content:
-                "You are Nova AI, a helpful and intelligent assistant. Provide clear, concise, and helpful responses.",
-            },
-            {
-              role: "user",
-              content: message,
-            },
-          ],
-        }),
+        body: JSON.stringify(requestBody),
       }
     );
 
@@ -81,13 +88,17 @@ serve(async (req) => {
 
     const data = await response.json();
     const aiResponse = data.choices?.[0]?.message?.content;
+    const images = data.choices?.[0]?.message?.images;
 
-    if (!aiResponse) {
+    if (!aiResponse && !images) {
       throw new Error("No response from AI");
     }
 
     return new Response(
-      JSON.stringify({ response: aiResponse }),
+      JSON.stringify({ 
+        response: aiResponse || "Image generated successfully",
+        images: images 
+      }),
       {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       }

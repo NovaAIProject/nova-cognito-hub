@@ -5,29 +5,22 @@ import { Sparkles } from "lucide-react";
 import MessageBubble from "./MessageBubble";
 
 const ThinkingIndicator = () => {
-  const [seconds, setSeconds] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSeconds(prev => prev + 1);
-    }, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <div className="flex gap-3 animate-fade-in">
       <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-primary to-accent text-white">
         <Sparkles className="w-4 h-4" />
       </div>
-      <div className="glass-panel rounded-2xl px-4 py-3 bg-card/50 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" 
-             style={{ 
-               backgroundSize: '200% 100%',
-               animation: 'shimmer 2s infinite'
-             }} 
-        />
-        <span className="text-sm text-muted-foreground relative z-10">
-          Thinking{seconds > 0 && ` (${seconds}s)`}
+      <div className="glass-panel rounded-2xl px-4 py-3 bg-card/50">
+        <span className="text-sm text-muted-foreground relative inline-block">
+          <span className="relative">
+            Thinking
+            <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer" 
+                  style={{ 
+                    backgroundSize: '200% 100%',
+                    animation: 'shimmer 1.5s infinite'
+                  }} 
+            />
+          </span>
         </span>
       </div>
     </div>

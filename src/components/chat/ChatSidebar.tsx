@@ -161,65 +161,63 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
       <div className={`
         fixed md:relative inset-y-0 left-0 z-50
         border-r border-border glass-panel flex flex-col
-        transform transition-all duration-300 ease-in-out
+        transition-all duration-300 ease-in-out
         ${isOpen ? 'w-64 translate-x-0' : 'w-0 -translate-x-full md:translate-x-0'}
       `}>
-        {isOpen && (
-          <>
-            <div className="p-4 border-b border-border md:hidden">
-              <Button
-                onClick={handleNewChat}
-                className="w-full justify-start gap-2 hover-scale smooth-transition"
-                style={{ background: "var(--gradient-primary)" }}
-              >
-                <Plus className="w-4 h-4" />
-                New Chat
-              </Button>
-            </div>
+        <div className={`flex flex-col h-full transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}>
+          <div className="p-4 border-b border-border md:hidden">
+            <Button
+              onClick={handleNewChat}
+              className="w-full justify-start gap-2 hover-scale smooth-transition"
+              style={{ background: "var(--gradient-primary)" }}
+            >
+              <Plus className="w-4 h-4" />
+              New Chat
+            </Button>
+          </div>
 
-            <ScrollArea className="flex-1 p-2">
-              {chats.map((chat) => (
-                <ChatItem
-                  key={chat.id}
-                  chat={chat}
-                  isActive={currentChatId === chat.id}
-                  onSelect={() => handleSelectChat(chat.id)}
-                  onDelete={() => handleDeleteChat(chat.id)}
-                  onRename={(newTitle) => handleRenameChat(chat.id, newTitle)}
-                  onDuplicate={() => handleDuplicateChat(chat.id)}
-                />
-              ))}
-            </ScrollArea>
+          <ScrollArea className="flex-1 p-2">
+            {chats.map((chat) => (
+              <ChatItem
+                key={chat.id}
+                chat={chat}
+                isActive={currentChatId === chat.id}
+                onSelect={() => handleSelectChat(chat.id)}
+                onDelete={() => handleDeleteChat(chat.id)}
+                onRename={(newTitle) => handleRenameChat(chat.id, newTitle)}
+                onDuplicate={() => handleDuplicateChat(chat.id)}
+              />
+            ))}
+          </ScrollArea>
 
-            <div className="p-4 border-t border-border space-y-2">
-          <Button
-            variant="ghost"
-            className="w-full justify-start gap-2 smooth-transition hover-scale"
-            onClick={() => toast.info("Contact support coming soon!")}
-          >
-            <HelpCircle className="w-4 h-4" />
-            Contact Support
-            <span className="ml-auto text-xs text-muted-foreground">Soon</span>
-          </Button>
-          <Button
-            variant="ghost"
-            className="w-full justify-start gap-2 smooth-transition hover-scale"
-            onClick={() => setDarkMode(!darkMode)}
-          >
-            {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-            {darkMode ? "Light Mode" : "Dark Mode"}
-          </Button>
-          <Button
-            variant="ghost"
-            className="w-full justify-start gap-2 text-destructive hover:text-destructive smooth-transition hover-scale"
-            onClick={handleLogout}
-          >
-            <LogOut className="w-4 h-4" />
-            Logout
-          </Button>
+          <div className="p-4 border-t border-border space-y-2">
+            <Button
+              variant="ghost"
+              className="w-full justify-start gap-2 smooth-transition hover-scale"
+              onClick={() => toast.info("Contact support coming soon!")}
+            >
+              <HelpCircle className="w-4 h-4" />
+              Contact Support
+              <span className="ml-auto text-xs text-muted-foreground">Soon</span>
+            </Button>
+            <Button
+              variant="ghost"
+              className="w-full justify-start gap-2 smooth-transition hover-scale"
+              onClick={() => setDarkMode(!darkMode)}
+            >
+              {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {darkMode ? "Light Mode" : "Dark Mode"}
+            </Button>
+            <Button
+              variant="ghost"
+              className="w-full justify-start gap-2 text-destructive hover:text-destructive smooth-transition hover-scale"
+              onClick={handleLogout}
+            >
+              <LogOut className="w-4 h-4" />
+              Logout
+            </Button>
+          </div>
         </div>
-          </>
-        )}
       </div>
     </>
   );

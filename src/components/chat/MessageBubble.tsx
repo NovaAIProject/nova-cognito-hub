@@ -61,8 +61,25 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
               : "bg-card/50 mr-auto max-w-[90%]"
           }`}
         >
-          <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:mt-4 prose-headings:mb-2 prose-headings:font-bold prose-h1:text-xl prose-h2:text-lg prose-h3:text-base prose-p:my-2 prose-pre:bg-muted prose-pre:p-3 prose-pre:rounded-lg prose-code:text-sm prose-code:bg-muted prose-code:px-1 prose-code:rounded prose-strong:font-bold prose-strong:text-foreground">
-            <ReactMarkdown>{message.content}</ReactMarkdown>
+          <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:mt-4 prose-headings:mb-2 prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-p:my-2 prose-pre:bg-muted prose-pre:p-4 prose-pre:rounded-lg prose-pre:overflow-x-auto prose-code:text-sm prose-code:before:content-none prose-code:after:content-none prose-strong:font-bold prose-strong:text-foreground prose-img:rounded-lg prose-img:shadow-lg">
+            <ReactMarkdown
+              components={{
+                code: ({ node, inline, className, children, ...props }: any) => {
+                  const match = /language-(\w+)/.exec(className || '');
+                  return !inline ? (
+                    <code className={className} {...props}>
+                      {children}
+                    </code>
+                  ) : (
+                    <code className="bg-muted px-1 py-0.5 rounded text-sm" {...props}>
+                      {children}
+                    </code>
+                  );
+                }
+              }}
+            >
+              {message.content}
+            </ReactMarkdown>
           </div>
         </div>
 

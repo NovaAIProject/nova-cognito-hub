@@ -169,6 +169,6 @@ All colors MUST be HSL.
   }
   
   .animate-shimmer {
-    animation: shimmer 2s infinite;
+    animation: shimmer 1.5s infinite;
   }
 }

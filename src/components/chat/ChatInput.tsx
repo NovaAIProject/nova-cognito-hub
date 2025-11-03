@@ -24,6 +24,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
   const [model, setModel] = useState("google/gemini-2.5-flash");
   const [isGenerating, setIsGenerating] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [generateImage, setGenerateImage] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSend = async () => {
@@ -48,6 +49,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
     }
 
     const userMessage = message;
+    const startTime = Date.now();
     setMessage("");
     setIsGenerating(true);
     onGeneratingChange?.(true);
@@ -74,6 +76,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
           body: JSON.stringify({
             message: userMessage,
             model: model,
+            generateImage: generateImage,
           }),
         }
       );
@@ -83,15 +86,25 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
       }
 
       const data = await response.json();
+      const endTime = Date.now();
+      const responseTime = Math.round((endTime - startTime) / 1000);
+
+      let finalContent = data.response;
+      if (data.images && data.images.length > 0) {
+        const imageUrl = data.images[0].image_url.url;
+        finalContent = `${data.response}\n\n![Generated Image](${imageUrl})`;
+      }
 
       await supabase.from("messages").insert([
         {
           chat_id: currentChatId,
           role: "assistant",
-          content: data.response,
+          content: `${finalContent}\n\n_Response time: ${responseTime}s_`,
           model: model,
         },
       ]);
+      
+      setGenerateImage(false);
     } catch (error: any) {
       toast.error(error.message || "Failed to send message");
     } finally {
@@ -123,7 +136,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="openai/gpt-5">GPT-5</SelectItem>
-              <SelectItem value="openai/gpt-5-mini">GPT-5 Mini</SelectItem>
+              <SelectItem value="claude-sonnet-4-5">Claude Sonnet 4.5</SelectItem>
               <SelectItem value="google/gemini-2.5-flash">
                 Gemini 2.5 Flash
               </SelectItem>
@@ -157,8 +170,11 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
               <Button
                 size="sm"
                 variant="ghost"
-                className="h-8 w-8 p-0 hover-scale"
-                onClick={() => toast.info("Image generation coming soon!")}
+                className={`h-8 w-8 p-0 hover-scale ${generateImage ? 'bg-primary/20' : ''}`}
+                onClick={() => {
+                  setGenerateImage(!generateImage);
+                  toast.success(generateImage ? "Text mode" : "Image generation mode");
+                }}
               >
                 <ImageIcon className="w-5 h-5" />
               </Button>
