@@ -11,7 +11,7 @@ interface ChatHeaderProps {
 const ChatHeader = ({ onToggleSidebar, onNewChat, sidebarOpen }: ChatHeaderProps) => {
   return (
     <header className="border-b border-border glass-panel p-3 md:p-4 animate-fade-in">
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex items-center gap-3">
         <div className="flex items-center gap-2 md:gap-3">
           <Button
             variant="ghost"
@@ -33,15 +33,17 @@ const ChatHeader = ({ onToggleSidebar, onNewChat, sidebarOpen }: ChatHeaderProps
           </div>
         </div>
         
-        <Button
-          onClick={() => toast.info("Coming soon!")}
-          variant="outline"
-          className="hidden md:flex items-center gap-2 hover-scale smooth-transition border-primary/30"
-          style={{ background: "var(--gradient-primary)" }}
-        >
-          <Crown className="w-4 h-4 text-white" />
-          <span className="text-white font-medium">Get Pro</span>
-        </Button>
+        <div className="flex-1 flex justify-center">
+          <Button
+            onClick={() => toast.info("Coming soon!")}
+            variant="outline"
+            className="hidden md:flex items-center gap-2 hover-scale smooth-transition border-primary/30"
+            style={{ background: "var(--gradient-primary)" }}
+          >
+            <Crown className="w-4 h-4 text-white" />
+            <span className="text-white font-medium">Get Pro</span>
+          </Button>
+        </div>
         
         <Button
           onClick={onNewChat}

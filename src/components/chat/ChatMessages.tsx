@@ -110,7 +110,7 @@ const ChatMessages = ({ chatId, isGenerating }: ChatMessagesProps) => {
             </p>
           </div>
           
-          <div className="mt-8 max-w-2xl mx-auto space-y-2">
+          <div className="mt-8 max-w-2xl mx-auto">
             <div className="flex gap-2 justify-center">
               <button className="group glass-panel rounded-lg px-3 py-2 hover:shadow-smooth hover-scale smooth-transition border border-border/50 hover:border-primary/30 flex items-center gap-2">
                 <span className="text-base">🎨</span>
@@ -125,13 +125,6 @@ const ChatMessages = ({ chatId, isGenerating }: ChatMessagesProps) => {
               <button className="group glass-panel rounded-lg px-3 py-2 hover:shadow-smooth hover-scale smooth-transition border border-border/50 hover:border-primary/30 flex items-center gap-2">
                 <span className="text-base">💻</span>
                 <span className="text-sm">Write code</span>
-              </button>
-            </div>
-            
-            <div className="flex justify-center">
-              <button className="group glass-panel rounded-lg px-3 py-2 hover:shadow-smooth hover-scale smooth-transition border border-border/50 hover:border-primary/30 flex items-center gap-2">
-                <span className="text-base">💡</span>
-                <span className="text-sm">Get ideas</span>
               </button>
             </div>
           </div>
