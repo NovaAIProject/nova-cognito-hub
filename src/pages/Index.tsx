@@ -16,11 +16,11 @@ const Index = () => {
             <Sparkles className="w-12 h-12 text-white" />
           </div>
           
-          <h1 className="text-6xl md:text-7xl font-bold mb-6 animate-fade-in">
+          <h1 className="text-6xl md:text-7xl font-bold mb-6 animate-fade-in font-poppins">
             <span className="gradient-text">Nova AI</span>
           </h1>
           
-          <p className="text-xl md:text-2xl text-muted-foreground mb-8 animate-fade-in">
+          <p className="text-xl md:text-2xl text-muted-foreground mb-8 animate-fade-in font-poppins">
             Experience the future of AI conversation. Generate images, code, and intelligent responses
             powered by GPT-5, Gemini 2.5, and Claude models.
           </p>
