@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Sparkles } from "lucide-react";
 import MessageBubble from "./MessageBubble";
 
 interface Message {
@@ -84,11 +85,11 @@ const ChatMessages = ({ chatId, isGenerating }: ChatMessagesProps) => {
             <Sparkles className="w-10 h-10 text-white" />
           </div>
           <div>
-            <h2 className="text-2xl font-bold gradient-text mb-2">
-              Welcome to Nova AI
+            <h2 className="text-2xl font-bold gradient-text mb-2 font-poppins">
+              Welcome to Nova AI ✨
             </h2>
             <p className="text-muted-foreground">
-              Start a new chat to begin your conversation
+              Ask me anything - I'm powered by the latest AI models
             </p>
           </div>
         </div>
@@ -122,6 +123,3 @@ const ChatMessages = ({ chatId, isGenerating }: ChatMessagesProps) => {
 };
 
 export default ChatMessages;
-
-// Missing import - will add in next file
-import { Sparkles } from "lucide-react";

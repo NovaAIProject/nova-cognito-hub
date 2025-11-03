@@ -90,6 +90,7 @@ const Chat = () => {
           <ChatHeader 
             onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
             onNewChat={handleNewChat}
+            sidebarOpen={sidebarOpen}
           />
           
           <ChatMessages chatId={currentChatId} isGenerating={isGenerating} />

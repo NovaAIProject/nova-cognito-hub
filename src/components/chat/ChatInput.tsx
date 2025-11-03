@@ -134,7 +134,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
           </Select>
         </div>
 
-        <div className="flex gap-2 items-end">
+        <div className="flex gap-2 items-center">
           <div className="flex-1 relative">
             <Textarea
               ref={textareaRef}
@@ -142,14 +142,14 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyPress}
               placeholder="Type your message..."
-              className="min-h-[50px] resize-none pr-20 smooth-transition"
+              className="min-h-[50px] max-h-[50px] resize-none pr-20 smooth-transition py-3"
               disabled={isGenerating}
             />
             <div className="absolute bottom-2 right-2 flex gap-1">
               <Button
                 size="sm"
                 variant="ghost"
-                className="h-9 w-9 p-0 hover-scale"
+                className="h-8 w-8 p-0 hover-scale"
                 onClick={() => toast.info("Voice input coming soon!")}
               >
                 <Mic className="w-5 h-5" />
@@ -157,7 +157,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
               <Button
                 size="sm"
                 variant="ghost"
-                className="h-9 w-9 p-0 hover-scale"
+                className="h-8 w-8 p-0 hover-scale"
                 onClick={() => toast.info("Image generation coming soon!")}
               >
                 <ImageIcon className="w-5 h-5" />

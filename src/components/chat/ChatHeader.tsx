@@ -1,12 +1,13 @@
-import { Sparkles, Menu, Plus } from "lucide-react";
+import { Sparkles, Menu, Plus, PanelLeftClose, PanelLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface ChatHeaderProps {
   onToggleSidebar: () => void;
   onNewChat: () => void;
+  sidebarOpen?: boolean;
 }
 
-const ChatHeader = ({ onToggleSidebar, onNewChat }: ChatHeaderProps) => {
+const ChatHeader = ({ onToggleSidebar, onNewChat, sidebarOpen }: ChatHeaderProps) => {
   return (
     <header className="border-b border-border glass-panel p-3 md:p-4 animate-fade-in">
       <div className="flex items-center justify-between gap-3">
@@ -15,9 +16,9 @@ const ChatHeader = ({ onToggleSidebar, onNewChat }: ChatHeaderProps) => {
             variant="ghost"
             size="icon"
             onClick={onToggleSidebar}
-            className="md:hidden hover-scale smooth-transition"
+            className="hover-scale smooth-transition"
           >
-            <Menu className="w-5 h-5" />
+            {sidebarOpen ? <PanelLeftClose className="w-5 h-5" /> : <PanelLeft className="w-5 h-5" />}
           </Button>
           <div
             className="w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center"
@@ -26,8 +27,8 @@ const ChatHeader = ({ onToggleSidebar, onNewChat }: ChatHeaderProps) => {
             <Sparkles className="w-4 h-4 md:w-5 md:h-5 text-white" />
           </div>
           <div>
-            <h1 className="font-bold text-lg md:text-xl gradient-text">Nova AI</h1>
-            <p className="text-xs text-muted-foreground hidden sm:block">Your intelligent assistant</p>
+            <h1 className="font-bold text-lg md:text-xl gradient-text font-poppins">Nova AI</h1>
+            <p className="text-xs text-muted-foreground hidden sm:block">Powered by advanced AI models</p>
           </div>
         </div>
         
