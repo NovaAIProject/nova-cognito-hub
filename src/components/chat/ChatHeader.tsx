@@ -1,5 +1,6 @@
-import { Sparkles, Menu, Plus, PanelLeftClose, PanelLeft } from "lucide-react";
+import { Sparkles, Menu, Plus, PanelLeftClose, PanelLeft, Crown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface ChatHeaderProps {
   onToggleSidebar: () => void;
@@ -31,6 +32,16 @@ const ChatHeader = ({ onToggleSidebar, onNewChat, sidebarOpen }: ChatHeaderProps
             <p className="text-xs text-muted-foreground hidden sm:block">Powered by advanced AI models</p>
           </div>
         </div>
+        
+        <Button
+          onClick={() => toast.info("Coming soon!")}
+          variant="outline"
+          className="hidden md:flex items-center gap-2 hover-scale smooth-transition border-primary/30"
+          style={{ background: "var(--gradient-primary)" }}
+        >
+          <Crown className="w-4 h-4 text-white" />
+          <span className="text-white font-medium">Get Pro</span>
+        </Button>
         
         <Button
           onClick={onNewChat}
