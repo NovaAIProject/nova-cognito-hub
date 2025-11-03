@@ -53,16 +53,6 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
         isUser ? "flex-row-reverse" : "flex-row"
       }`}
     >
-      <div
-        className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-semibold ${
-          isUser
-            ? "bg-primary text-primary-foreground"
-            : "bg-gradient-to-br from-primary to-accent text-white"
-        }`}
-      >
-        {isUser ? username : <Sparkles className="w-4 h-4" />}
-      </div>
-
       <div className="group flex-1 space-y-2">
         <div
           className={`glass-panel rounded-2xl p-4 smooth-transition ${
@@ -71,13 +61,13 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
               : "bg-card/50 mr-auto max-w-[90%]"
           }`}
         >
-          <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:mt-3 prose-headings:mb-2 prose-p:my-2 prose-pre:bg-muted prose-pre:p-3 prose-pre:rounded-lg prose-strong:font-bold prose-strong:text-foreground">
+          <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:mt-4 prose-headings:mb-2 prose-headings:font-bold prose-h1:text-xl prose-h2:text-lg prose-h3:text-base prose-p:my-2 prose-pre:bg-muted prose-pre:p-3 prose-pre:rounded-lg prose-code:text-sm prose-code:bg-muted prose-code:px-1 prose-code:rounded prose-strong:font-bold prose-strong:text-foreground">
             <ReactMarkdown>{message.content}</ReactMarkdown>
           </div>
         </div>
 
         {!isUser && (
-          <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 smooth-transition">
+          <div className="flex items-center gap-2 smooth-transition">
             <Button
               variant="ghost"
               size="sm"

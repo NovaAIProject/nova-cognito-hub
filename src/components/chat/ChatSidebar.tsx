@@ -164,32 +164,34 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
         transform transition-all duration-300 ease-in-out
         ${isOpen ? 'w-64 translate-x-0' : 'w-0 -translate-x-full md:translate-x-0'}
       `}>
-        <div className="p-4 border-b border-border md:hidden">
-          <Button
-            onClick={handleNewChat}
-            className="w-full justify-start gap-2 hover-scale smooth-transition"
-            style={{ background: "var(--gradient-primary)" }}
-          >
-            <Plus className="w-4 h-4" />
-            New Chat
-          </Button>
-        </div>
+        {isOpen && (
+          <>
+            <div className="p-4 border-b border-border md:hidden">
+              <Button
+                onClick={handleNewChat}
+                className="w-full justify-start gap-2 hover-scale smooth-transition"
+                style={{ background: "var(--gradient-primary)" }}
+              >
+                <Plus className="w-4 h-4" />
+                New Chat
+              </Button>
+            </div>
 
-        <ScrollArea className="flex-1 p-2">
-          {chats.map((chat) => (
-            <ChatItem
-              key={chat.id}
-              chat={chat}
-              isActive={currentChatId === chat.id}
-              onSelect={() => handleSelectChat(chat.id)}
-              onDelete={() => handleDeleteChat(chat.id)}
-              onRename={(newTitle) => handleRenameChat(chat.id, newTitle)}
-              onDuplicate={() => handleDuplicateChat(chat.id)}
-            />
-          ))}
-        </ScrollArea>
+            <ScrollArea className="flex-1 p-2">
+              {chats.map((chat) => (
+                <ChatItem
+                  key={chat.id}
+                  chat={chat}
+                  isActive={currentChatId === chat.id}
+                  onSelect={() => handleSelectChat(chat.id)}
+                  onDelete={() => handleDeleteChat(chat.id)}
+                  onRename={(newTitle) => handleRenameChat(chat.id, newTitle)}
+                  onDuplicate={() => handleDuplicateChat(chat.id)}
+                />
+              ))}
+            </ScrollArea>
 
-        <div className="p-4 border-t border-border space-y-2">
+            <div className="p-4 border-t border-border space-y-2">
           <Button
             variant="ghost"
             className="w-full justify-start gap-2 smooth-transition hover-scale"
@@ -216,6 +218,8 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
             Logout
           </Button>
         </div>
+          </>
+        )}
       </div>
     </>
   );

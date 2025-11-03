@@ -4,6 +4,36 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sparkles } from "lucide-react";
 import MessageBubble from "./MessageBubble";
 
+const ThinkingIndicator = () => {
+  const [seconds, setSeconds] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSeconds(prev => prev + 1);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="flex gap-3 animate-fade-in">
+      <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-primary to-accent text-white">
+        <Sparkles className="w-4 h-4" />
+      </div>
+      <div className="glass-panel rounded-2xl px-4 py-3 bg-card/50 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer" 
+             style={{ 
+               backgroundSize: '200% 100%',
+               animation: 'shimmer 2s infinite'
+             }} 
+        />
+        <span className="text-sm text-muted-foreground relative z-10">
+          Thinking{seconds > 0 && ` (${seconds}s)`}
+        </span>
+      </div>
+    </div>
+  );
+};
+
 interface Message {
   id: string;
   role: string;
@@ -93,29 +123,25 @@ const ChatMessages = ({ chatId, isGenerating }: ChatMessagesProps) => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-8">
-            <button className="glass-panel rounded-xl p-4 hover:shadow-smooth hover-scale smooth-transition text-left">
-              <div className="text-2xl mb-2">🎨</div>
-              <h3 className="font-semibold text-sm mb-1">Create Image</h3>
-              <p className="text-xs text-muted-foreground">Generate stunning visuals</p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-8 max-w-3xl mx-auto">
+            <button className="glass-panel rounded-lg p-3 hover:shadow-smooth hover-scale smooth-transition text-left">
+              <div className="text-lg mb-1">🎨</div>
+              <h3 className="font-medium text-xs">Create Image</h3>
             </button>
             
-            <button className="glass-panel rounded-xl p-4 hover:shadow-smooth hover-scale smooth-transition text-left">
-              <div className="text-2xl mb-2">📝</div>
-              <h3 className="font-semibold text-sm mb-1">Summarize Text</h3>
-              <p className="text-xs text-muted-foreground">Condense any content</p>
+            <button className="glass-panel rounded-lg p-3 hover:shadow-smooth hover-scale smooth-transition text-left">
+              <div className="text-lg mb-1">📝</div>
+              <h3 className="font-medium text-xs">Summarize Text</h3>
             </button>
             
-            <button className="glass-panel rounded-xl p-4 hover:shadow-smooth hover-scale smooth-transition text-left">
-              <div className="text-2xl mb-2">💻</div>
-              <h3 className="font-semibold text-sm mb-1">Write Code</h3>
-              <p className="text-xs text-muted-foreground">Build anything you imagine</p>
+            <button className="glass-panel rounded-lg p-3 hover:shadow-smooth hover-scale smooth-transition text-left">
+              <div className="text-lg mb-1">💻</div>
+              <h3 className="font-medium text-xs">Write Code</h3>
             </button>
             
-            <button className="glass-panel rounded-xl p-4 hover:shadow-smooth hover-scale smooth-transition text-left">
-              <div className="text-2xl mb-2">💡</div>
-              <h3 className="font-semibold text-sm mb-1">Get Ideas</h3>
-              <p className="text-xs text-muted-foreground">Brainstorm solutions</p>
+            <button className="glass-panel rounded-lg p-3 hover:shadow-smooth hover-scale smooth-transition text-left">
+              <div className="text-lg mb-1">💡</div>
+              <h3 className="font-medium text-xs">Get Ideas</h3>
             </button>
           </div>
         </div>
@@ -129,23 +155,7 @@ const ChatMessages = ({ chatId, isGenerating }: ChatMessagesProps) => {
         {messages.map((message) => (
           <MessageBubble key={message.id} message={message} />
         ))}
-        {isGenerating && (
-          <div className="flex gap-3 animate-fade-in">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-primary to-accent text-white">
-              <Sparkles className="w-4 h-4" />
-            </div>
-            <div className="glass-panel rounded-2xl px-4 py-3 bg-card/50">
-              <div className="flex items-center gap-2">
-                <span className="text-sm text-muted-foreground">Thinking</span>
-                <div className="flex gap-1">
-                  <span className="w-1 h-1 rounded-full bg-primary animate-pulse" style={{ animationDelay: "0ms" }} />
-                  <span className="w-1 h-1 rounded-full bg-primary animate-pulse" style={{ animationDelay: "150ms" }} />
-                  <span className="w-1 h-1 rounded-full bg-primary animate-pulse" style={{ animationDelay: "300ms" }} />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        {isGenerating && <ThinkingIndicator />}
       </div>
     </ScrollArea>
   );
