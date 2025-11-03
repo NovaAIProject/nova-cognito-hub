@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Plus, MessageSquare, Settings, Moon, Sun, LogOut } from "lucide-react";
+import { Plus, MessageSquare, Settings, Moon, Sun, LogOut, HelpCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import ChatItem from "./ChatItem";
@@ -190,6 +190,15 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
         </ScrollArea>
 
         <div className="p-4 border-t border-border space-y-2">
+          <Button
+            variant="ghost"
+            className="w-full justify-start gap-2 smooth-transition hover-scale"
+            onClick={() => toast.info("Contact support coming soon!")}
+          >
+            <HelpCircle className="w-4 h-4" />
+            Contact Support
+            <span className="ml-auto text-xs text-muted-foreground">Soon</span>
+          </Button>
           <Button
             variant="ghost"
             className="w-full justify-start gap-2 smooth-transition hover-scale"

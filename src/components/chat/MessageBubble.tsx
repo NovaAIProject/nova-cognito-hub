@@ -49,7 +49,7 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
 
   return (
     <div
-      className={`flex gap-3 animate-fade-in ${
+      className={`flex gap-3 message-appear ${
         isUser ? "flex-row-reverse" : "flex-row"
       }`}
     >
@@ -71,7 +71,7 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
               : "bg-card/50 mr-auto max-w-[90%]"
           }`}
         >
-          <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:mt-3 prose-headings:mb-2 prose-p:my-2 prose-pre:bg-muted prose-pre:p-3 prose-pre:rounded-lg">
+          <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:mt-3 prose-headings:mb-2 prose-p:my-2 prose-pre:bg-muted prose-pre:p-3 prose-pre:rounded-lg prose-strong:font-bold prose-strong:text-foreground">
             <ReactMarkdown>{message.content}</ReactMarkdown>
           </div>
         </div>
