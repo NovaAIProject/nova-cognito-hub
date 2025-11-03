@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Send, Square, Image as ImageIcon } from "lucide-react";
+import { Send, Square } from "lucide-react";
 import { toast } from "sonner";
 
 interface ChatInputProps {
@@ -91,7 +91,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
       let finalContent = data.response;
       if (data.images && data.images.length > 0) {
         const imageUrl = data.images[0].image_url.url;
-        finalContent = `${data.response}\n\n![Generated Image](${imageUrl})`;
+        finalContent = `${data.response}\n\n![](${imageUrl})`;
       }
 
       await supabase.from("messages").insert([
@@ -153,23 +153,20 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleKeyPress}
               placeholder="Type your message..."
-              className="min-h-[50px] max-h-[50px] resize-none pr-20 smooth-transition py-3"
+              className="min-h-[50px] max-h-[50px] resize-none pr-16 smooth-transition py-3"
               disabled={isGenerating}
             />
-            <div className="absolute bottom-2 right-2">
-              <Button
-                size="sm"
-                variant="ghost"
-                className={`h-8 w-8 p-0 hover-scale smooth-transition ${generateImage ? 'bg-primary text-primary-foreground' : ''}`}
-                onClick={() => {
-                  setGenerateImage(!generateImage);
-                  toast.success(generateImage ? "Text mode" : "Image mode enabled");
-                }}
-                title={generateImage ? "Switch to text mode" : "Switch to image generation"}
-              >
-                <ImageIcon className="w-4 h-4" />
-              </Button>
-            </div>
+            <Button
+              size="sm"
+              variant={generateImage ? "default" : "ghost"}
+              className="absolute bottom-2 right-2 h-7 text-xs hover-scale smooth-transition"
+              onClick={() => {
+                setGenerateImage(!generateImage);
+                toast.success(generateImage ? "Text mode" : "Image mode enabled");
+              }}
+            >
+              {generateImage ? "Text" : "Image"}
+            </Button>
           </div>
 
           {isGenerating ? (
@@ -177,7 +174,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
               onClick={handleStopGenerating}
               size="icon"
               variant="outline"
-              className="h-[50px] w-[50px] rounded-lg border-2 smooth-transition hover-scale hover:bg-destructive/10 hover:border-destructive"
+              className="h-[44px] w-[44px] rounded-lg border-2 smooth-transition hover-scale hover:bg-destructive/10 hover:border-destructive"
             >
               <Square className="w-4 h-4 fill-current" />
             </Button>
@@ -186,7 +183,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
               onClick={handleSend}
               disabled={!message.trim()}
               size="icon"
-              className="h-[50px] w-[50px] rounded-lg smooth-transition hover-scale disabled:opacity-50"
+              className="h-[44px] w-[44px] rounded-lg smooth-transition hover-scale disabled:opacity-50"
               style={{ background: "var(--gradient-primary)" }}
             >
               <Send className="w-4 h-4" />
