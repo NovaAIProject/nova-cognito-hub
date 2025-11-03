@@ -160,9 +160,9 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
       {/* Sidebar */}
       <div className={`
         fixed md:relative inset-y-0 left-0 z-50
-        w-64 border-r border-border glass-panel flex flex-col
-        transform transition-transform duration-300 ease-in-out
-        ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+        border-r border-border glass-panel flex flex-col
+        transform transition-all duration-300 ease-in-out
+        ${isOpen ? 'w-64 translate-x-0' : 'w-0 -translate-x-full md:translate-x-0'}
       `}>
         <div className="p-4 border-b border-border md:hidden">
           <Button

@@ -76,8 +76,8 @@ const ChatMessages = ({ chatId, isGenerating }: ChatMessagesProps) => {
 
   if (!chatId) {
     return (
-      <div className="flex-1 flex items-center justify-center">
-        <div className="text-center space-y-4">
+      <div className="flex-1 flex items-center justify-center p-4">
+        <div className="text-center space-y-6 max-w-2xl">
           <div
             className="w-20 h-20 rounded-full mx-auto flex items-center justify-center"
             style={{ background: "var(--gradient-primary)" }}
@@ -88,9 +88,35 @@ const ChatMessages = ({ chatId, isGenerating }: ChatMessagesProps) => {
             <h2 className="text-2xl font-bold gradient-text mb-2 font-poppins">
               Welcome to Nova AI
             </h2>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground mb-6">
               Ask me anything - I'm powered by the latest AI models
             </p>
+          </div>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-8">
+            <button className="glass-panel rounded-xl p-4 hover:shadow-smooth hover-scale smooth-transition text-left">
+              <div className="text-2xl mb-2">🎨</div>
+              <h3 className="font-semibold text-sm mb-1">Create Image</h3>
+              <p className="text-xs text-muted-foreground">Generate stunning visuals</p>
+            </button>
+            
+            <button className="glass-panel rounded-xl p-4 hover:shadow-smooth hover-scale smooth-transition text-left">
+              <div className="text-2xl mb-2">📝</div>
+              <h3 className="font-semibold text-sm mb-1">Summarize Text</h3>
+              <p className="text-xs text-muted-foreground">Condense any content</p>
+            </button>
+            
+            <button className="glass-panel rounded-xl p-4 hover:shadow-smooth hover-scale smooth-transition text-left">
+              <div className="text-2xl mb-2">💻</div>
+              <h3 className="font-semibold text-sm mb-1">Write Code</h3>
+              <p className="text-xs text-muted-foreground">Build anything you imagine</p>
+            </button>
+            
+            <button className="glass-panel rounded-xl p-4 hover:shadow-smooth hover-scale smooth-transition text-left">
+              <div className="text-2xl mb-2">💡</div>
+              <h3 className="font-semibold text-sm mb-1">Get Ideas</h3>
+              <p className="text-xs text-muted-foreground">Brainstorm solutions</p>
+            </button>
           </div>
         </div>
       </div>
@@ -108,11 +134,14 @@ const ChatMessages = ({ chatId, isGenerating }: ChatMessagesProps) => {
             <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-primary to-accent text-white">
               <Sparkles className="w-4 h-4" />
             </div>
-            <div className="glass-panel rounded-2xl p-4 bg-card/50">
-              <div className="flex gap-1">
-                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" style={{ animationDelay: "0ms" }} />
-                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" style={{ animationDelay: "150ms" }} />
-                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" style={{ animationDelay: "300ms" }} />
+            <div className="glass-panel rounded-2xl px-4 py-3 bg-card/50">
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">Thinking</span>
+                <div className="flex gap-1">
+                  <span className="w-1 h-1 rounded-full bg-primary animate-pulse" style={{ animationDelay: "0ms" }} />
+                  <span className="w-1 h-1 rounded-full bg-primary animate-pulse" style={{ animationDelay: "150ms" }} />
+                  <span className="w-1 h-1 rounded-full bg-primary animate-pulse" style={{ animationDelay: "300ms" }} />
+                </div>
               </div>
             </div>
           </div>
