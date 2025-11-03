@@ -23,7 +23,6 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
   const [message, setMessage] = useState("");
   const [model, setModel] = useState("google/gemini-2.5-flash");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [generateImage, setGenerateImage] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleSend = async () => {
@@ -75,7 +74,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
           body: JSON.stringify({
             message: userMessage,
             model: model,
-            generateImage: generateImage,
+            generateImage: false,
           }),
         }
       );
@@ -102,8 +101,6 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
           model: model,
         },
       ]);
-      
-      setGenerateImage(false);
     } catch (error: any) {
       toast.error(error.message || "Failed to send message");
     } finally {
@@ -146,28 +143,15 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
         </div>
 
         <div className="flex gap-2 items-center">
-          <div className="flex-1 relative">
-            <Textarea
-              ref={textareaRef}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyDown={handleKeyPress}
-              placeholder="Type your message..."
-              className="min-h-[50px] max-h-[50px] resize-none pr-16 smooth-transition py-3"
-              disabled={isGenerating}
-            />
-            <Button
-              size="sm"
-              variant={generateImage ? "default" : "ghost"}
-              className="absolute bottom-2 right-2 h-7 text-xs hover-scale smooth-transition"
-              onClick={() => {
-                setGenerateImage(!generateImage);
-                toast.success(generateImage ? "Text mode" : "Image mode enabled");
-              }}
-            >
-              {generateImage ? "Text" : "Image"}
-            </Button>
-          </div>
+          <Textarea
+            ref={textareaRef}
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={handleKeyPress}
+            placeholder="Type your message..."
+            className="min-h-[50px] max-h-[50px] resize-none smooth-transition py-3 flex-1"
+            disabled={isGenerating}
+          />
 
           {isGenerating ? (
             <Button

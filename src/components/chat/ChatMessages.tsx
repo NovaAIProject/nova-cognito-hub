@@ -110,45 +110,25 @@ const ChatMessages = ({ chatId, isGenerating }: ChatMessagesProps) => {
             </p>
           </div>
           
-          <div className="grid grid-cols-2 gap-3 mt-8 max-w-2xl mx-auto">
-            <button className="group glass-panel rounded-xl p-4 hover:shadow-smooth hover-scale smooth-transition text-left border border-border/50 hover:border-primary/30">
-              <div className="flex items-center gap-3">
-                <div className="text-2xl">🎨</div>
-                <div>
-                  <h3 className="font-semibold text-sm">Create Image</h3>
-                  <p className="text-xs text-muted-foreground">AI generation</p>
-                </div>
-              </div>
+          <div className="flex flex-wrap gap-2 mt-8 max-w-2xl mx-auto justify-center">
+            <button className="group glass-panel rounded-lg px-3 py-2 hover:shadow-smooth hover-scale smooth-transition border border-border/50 hover:border-primary/30 flex items-center gap-2">
+              <span className="text-base">🎨</span>
+              <span className="text-sm">Create image</span>
             </button>
             
-            <button className="group glass-panel rounded-xl p-4 hover:shadow-smooth hover-scale smooth-transition text-left border border-border/50 hover:border-primary/30">
-              <div className="flex items-center gap-3">
-                <div className="text-2xl">📝</div>
-                <div>
-                  <h3 className="font-semibold text-sm">Summarize</h3>
-                  <p className="text-xs text-muted-foreground">Condense text</p>
-                </div>
-              </div>
+            <button className="group glass-panel rounded-lg px-3 py-2 hover:shadow-smooth hover-scale smooth-transition border border-border/50 hover:border-primary/30 flex items-center gap-2">
+              <span className="text-base">📝</span>
+              <span className="text-sm">Summarize</span>
             </button>
             
-            <button className="group glass-panel rounded-xl p-4 hover:shadow-smooth hover-scale smooth-transition text-left border border-border/50 hover:border-primary/30">
-              <div className="flex items-center gap-3">
-                <div className="text-2xl">💻</div>
-                <div>
-                  <h3 className="font-semibold text-sm">Write Code</h3>
-                  <p className="text-xs text-muted-foreground">Any language</p>
-                </div>
-              </div>
+            <button className="group glass-panel rounded-lg px-3 py-2 hover:shadow-smooth hover-scale smooth-transition border border-border/50 hover:border-primary/30 flex items-center gap-2">
+              <span className="text-base">💻</span>
+              <span className="text-sm">Write code</span>
             </button>
             
-            <button className="group glass-panel rounded-xl p-4 hover:shadow-smooth hover-scale smooth-transition text-left border border-border/50 hover:border-primary/30">
-              <div className="flex items-center gap-3">
-                <div className="text-2xl">💡</div>
-                <div>
-                  <h3 className="font-semibold text-sm">Get Ideas</h3>
-                  <p className="text-xs text-muted-foreground">Brainstorm</p>
-                </div>
-              </div>
+            <button className="group glass-panel rounded-lg px-3 py-2 hover:shadow-smooth hover-scale smooth-transition border border-border/50 hover:border-primary/30 flex items-center gap-2">
+              <span className="text-base">💡</span>
+              <span className="text-sm">Get ideas</span>
             </button>
           </div>
         </div>
