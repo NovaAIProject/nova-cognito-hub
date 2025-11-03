@@ -136,7 +136,6 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="openai/gpt-5">GPT-5</SelectItem>
-              <SelectItem value="claude-sonnet-4-5">Claude Sonnet 4.5</SelectItem>
               <SelectItem value="google/gemini-2.5-flash">
                 Gemini 2.5 Flash
               </SelectItem>
