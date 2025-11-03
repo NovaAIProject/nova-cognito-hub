@@ -105,6 +105,36 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
           model: model,
         },
       ]);
+
+      // Generate a smart title for new chats
+      const isNewChat = chatId !== currentChatId;
+      if (isNewChat) {
+        const titleResponse = await fetch(
+          `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+            },
+            body: JSON.stringify({
+              message: `Generate a short, concise title (max 4-5 words) for a chat that starts with: "${userMessage.substring(0, 100)}". Return ONLY the title, no quotes or extra text.`,
+              model: "google/gemini-2.5-flash",
+              generateImage: false,
+            }),
+          }
+        );
+
+        if (titleResponse.ok) {
+          const titleData = await titleResponse.json();
+          const generatedTitle = titleData.response.trim().replace(/['"]/g, '').substring(0, 50);
+          
+          await supabase
+            .from("chats")
+            .update({ title: generatedTitle })
+            .eq("id", currentChatId);
+        }
+      }
     } catch (error: any) {
       toast.error(error.message || "Failed to send message");
     } finally {
