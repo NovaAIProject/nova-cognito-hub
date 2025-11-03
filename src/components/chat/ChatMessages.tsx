@@ -86,7 +86,7 @@ const ChatMessages = ({ chatId, isGenerating }: ChatMessagesProps) => {
           </div>
           <div>
             <h2 className="text-2xl font-bold gradient-text mb-2 font-poppins">
-              Welcome to Nova AI ✨
+              Welcome to Nova AI
             </h2>
             <p className="text-muted-foreground">
               Ask me anything - I'm powered by the latest AI models

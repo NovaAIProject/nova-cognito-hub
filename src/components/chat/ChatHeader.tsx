@@ -34,9 +34,9 @@ const ChatHeader = ({ onToggleSidebar, onNewChat, sidebarOpen }: ChatHeaderProps
         
         <Button
           onClick={onNewChat}
+          variant="ghost"
           size="icon"
-          className="shrink-0 hover-scale smooth-transition"
-          style={{ background: "var(--gradient-primary)" }}
+          className="shrink-0 hover-scale smooth-transition border border-border"
         >
           <Plus className="w-5 h-5" />
         </Button>

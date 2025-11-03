@@ -22,7 +22,7 @@ const Index = () => {
           
           <p className="text-xl md:text-2xl text-muted-foreground mb-8 animate-fade-in font-poppins">
             Experience the future of AI conversation. Generate images, code, and intelligent responses
-            powered by GPT-5, Gemini 2.5, and Claude models.
+            powered by GPT-5 and Gemini 2.5 models.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in">
@@ -41,7 +41,7 @@ const Index = () => {
               <Zap className="w-8 h-8 mb-4 text-primary" />
               <h3 className="font-semibold text-lg mb-2">Lightning Fast</h3>
               <p className="text-sm text-muted-foreground">
-                Switch between GPT-5, Gemini, and Claude models instantly
+                Switch between GPT-5 and Gemini models instantly
               </p>
             </div>
             
