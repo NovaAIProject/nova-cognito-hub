@@ -1,3 +1,4 @@
+import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
@@ -18,6 +19,55 @@ serve(async (req) => {
       throw new Error("Message is required");
     }
 
+    // Handle Claude models separately
+    if (model.startsWith("claude")) {
+      const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
+      if (!ANTHROPIC_API_KEY) {
+        throw new Error("ANTHROPIC_API_KEY is not configured");
+      }
+
+      const anthropicResponse = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "x-api-key": ANTHROPIC_API_KEY,
+          "anthropic-version": "2023-06-01",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: model,
+          max_tokens: 4096,
+          messages: [
+            {
+              role: "user",
+              content: message,
+            },
+          ],
+          system: "You are Nova AI, a helpful and intelligent assistant. Provide clear, concise, and helpful responses. When writing code, always use proper markdown code blocks with language specifications.",
+        }),
+      });
+
+      if (!anthropicResponse.ok) {
+        const errorText = await anthropicResponse.text();
+        console.error("Anthropic API error:", anthropicResponse.status, errorText);
+        throw new Error(`Anthropic API error: ${anthropicResponse.status}`);
+      }
+
+      const anthropicData = await anthropicResponse.json();
+      const aiResponse = anthropicData.content?.[0]?.text;
+
+      if (!aiResponse) {
+        throw new Error("No response from Claude");
+      }
+
+      return new Response(
+        JSON.stringify({ response: aiResponse }),
+        {
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        }
+      );
+    }
+
+    // Handle Lovable AI models (Gemini, GPT)
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
       throw new Error("LOVABLE_API_KEY is not configured");
