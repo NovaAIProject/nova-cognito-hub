@@ -18,6 +18,7 @@ interface MessageBubbleProps {
 const MessageBubble = ({ message }: MessageBubbleProps) => {
   const [copied, setCopied] = useState(false);
   const [username, setUsername] = useState<string>("U");
+  const [displayedContent, setDisplayedContent] = useState("");
   const isUser = message.role === "user";
 
   // Extract response time from message content
@@ -26,6 +27,25 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
   const contentWithoutTime = responseTime 
     ? message.content.replace(/\n\n_Response time: \d+s_$/, '')
     : message.content;
+
+  // Typing animation for AI responses
+  useEffect(() => {
+    if (!isUser && contentWithoutTime.length > 100) {
+      setDisplayedContent("");
+      let index = 0;
+      const interval = setInterval(() => {
+        if (index < contentWithoutTime.length) {
+          setDisplayedContent(contentWithoutTime.slice(0, index + 1));
+          index++;
+        } else {
+          clearInterval(interval);
+        }
+      }, 10);
+      return () => clearInterval(interval);
+    } else {
+      setDisplayedContent(contentWithoutTime);
+    }
+  }, [contentWithoutTime, isUser]);
 
   useEffect(() => {
     if (isUser) {
@@ -80,18 +100,23 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
                 code: ({ node, inline, className, children, ...props }: any) => {
                   const match = /language-(\w+)/.exec(className || '');
                   return !inline ? (
-                    <code className={className} {...props}>
-                      {children}
-                    </code>
+                    <div className="my-4">
+                      <code className={className} {...props}>
+                        {children}
+                      </code>
+                    </div>
                   ) : (
                     <code className="bg-muted px-1 py-0.5 rounded text-sm" {...props}>
                       {children}
                     </code>
                   );
-                }
+                },
+                p: ({ children }) => (
+                  <p className="my-2">{children}</p>
+                )
               }}
             >
-              {contentWithoutTime}
+              {displayedContent}
             </ReactMarkdown>
           </div>
         </div>
