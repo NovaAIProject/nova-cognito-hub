@@ -49,8 +49,6 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
     const userMessage = message;
     const startTime = Date.now();
     setMessage("");
-    setIsGenerating(true);
-    onGeneratingChange?.(true);
 
     try {
       const { error: userMsgError } = await supabase.from("messages").insert([
@@ -62,6 +60,12 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
       ]);
 
       if (userMsgError) throw userMsgError;
+
+      // Small delay to ensure user message renders before showing thinking
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      setIsGenerating(true);
+      onGeneratingChange?.(true);
 
       const response = await fetch(
         `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`,
