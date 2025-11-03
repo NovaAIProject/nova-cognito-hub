@@ -167,8 +167,4 @@ All colors MUST be HSL.
       transform: translateX(100%);
     }
   }
-  
-  .animate-shimmer {
-    animation: shimmer 1.5s infinite;
-  }
 }

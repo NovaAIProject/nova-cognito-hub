@@ -20,6 +20,13 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
   const [username, setUsername] = useState<string>("U");
   const isUser = message.role === "user";
 
+  // Extract response time from message content
+  const responseTimeMatch = message.content.match(/_Response time: (\d+)s_$/);
+  const responseTime = responseTimeMatch ? responseTimeMatch[1] : null;
+  const contentWithoutTime = responseTime 
+    ? message.content.replace(/\n\n_Response time: \d+s_$/, '')
+    : message.content;
+
   useEffect(() => {
     if (isUser) {
       const fetchUsername = async () => {
@@ -54,6 +61,12 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
       }`}
     >
       <div className="group flex-1 space-y-2">
+        {!isUser && responseTime && (
+          <div className="text-xs text-muted-foreground ml-1">
+            Thought for {responseTime}s
+          </div>
+        )}
+        
         <div
           className={`glass-panel rounded-2xl p-4 smooth-transition ${
             isUser
@@ -78,7 +91,7 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
                 }
               }}
             >
-              {message.content}
+              {contentWithoutTime}
             </ReactMarkdown>
           </div>
         </div>

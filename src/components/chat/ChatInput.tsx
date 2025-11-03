@@ -169,13 +169,14 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
               <Button
                 size="sm"
                 variant="ghost"
-                className={`h-8 w-8 p-0 hover-scale ${generateImage ? 'bg-primary/20' : ''}`}
+                className={`h-8 w-8 p-0 hover-scale smooth-transition ${generateImage ? 'bg-primary text-primary-foreground' : ''}`}
                 onClick={() => {
                   setGenerateImage(!generateImage);
-                  toast.success(generateImage ? "Text mode" : "Image generation mode");
+                  toast.success(generateImage ? "Text mode" : "Image mode enabled");
                 }}
+                title={generateImage ? "Switch to text mode" : "Switch to image generation"}
               >
-                <ImageIcon className="w-5 h-5" />
+                <ImageIcon className="w-4 h-4" />
               </Button>
             </div>
           </div>
