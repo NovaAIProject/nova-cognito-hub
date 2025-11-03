@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Send, Mic, Square, Image as ImageIcon } from "lucide-react";
+import { Send, Square, Image as ImageIcon } from "lucide-react";
 import { toast } from "sonner";
 
 interface ChatInputProps {
@@ -23,7 +23,6 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
   const [message, setMessage] = useState("");
   const [model, setModel] = useState("google/gemini-2.5-flash");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
   const [generateImage, setGenerateImage] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -157,15 +156,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
               className="min-h-[50px] max-h-[50px] resize-none pr-20 smooth-transition py-3"
               disabled={isGenerating}
             />
-            <div className="absolute bottom-2 right-2 flex gap-1">
-              <Button
-                size="sm"
-                variant="ghost"
-                className="h-8 w-8 p-0 hover-scale"
-                onClick={() => toast.info("Voice input coming soon!")}
-              >
-                <Mic className="w-5 h-5" />
-              </Button>
+            <div className="absolute bottom-2 right-2">
               <Button
                 size="sm"
                 variant="ghost"

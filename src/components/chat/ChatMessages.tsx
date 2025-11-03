@@ -11,15 +11,10 @@ const ThinkingIndicator = () => {
         <Sparkles className="w-4 h-4" />
       </div>
       <div className="glass-panel rounded-2xl px-4 py-3 bg-card/50">
-        <span className="text-sm text-muted-foreground relative inline-block overflow-hidden">
-          <span className="relative z-10">Thinking</span>
-          <span 
-            className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent"
-            style={{ 
-              backgroundSize: '200% 100%',
-              animation: 'shimmer 1.5s infinite linear'
-            }} 
-          />
+        <span 
+          className="text-sm inline-block bg-gradient-to-r from-muted-foreground via-primary to-muted-foreground bg-clip-text text-transparent animate-[shimmer_2s_ease-in-out_infinite] bg-[length:200%_100%]"
+        >
+          Thinking
         </span>
       </div>
     </div>
