@@ -43,7 +43,7 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
         } else {
           clearInterval(interval);
         }
-      }, 5);
+      }, 3);
       return () => clearInterval(interval);
     } else {
       setDisplayedContent(contentWithoutTime);
