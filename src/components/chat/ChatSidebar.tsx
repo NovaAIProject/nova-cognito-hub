@@ -166,24 +166,23 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
       {/* Sidebar */}
       <div className={`
         fixed md:relative inset-y-0 left-0 z-50
-        border-r border-border/50 bg-background/95 backdrop-blur-xl flex flex-col
+        border-r border-border glass-panel flex flex-col
         transition-all duration-300 ease-in-out
         ${isOpen ? 'w-64 translate-x-0' : 'w-0 -translate-x-full md:translate-x-0'}
       `}>
         <div className={`flex flex-col h-full transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}>
           {/* Header with Logo and Title */}
-          <div className="p-4 space-y-4">
-            <div className="flex items-center gap-3 px-2">
-              <div className="w-9 h-9 rounded-xl flex items-center justify-center relative overflow-hidden">
-                <div className="absolute inset-0" style={{ background: "var(--gradient-primary)" }} />
-                <Sparkles className="w-5 h-5 text-white relative z-10" />
+          <div className="p-4 border-b border-border">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
+                <Sparkles className="w-5 h-5 text-primary-foreground" />
               </div>
-              <span className="text-lg font-semibold tracking-tight">Nova AI</span>
+              <span className="text-xl font-semibold">Nova AI</span>
             </div>
             
             <Button
               onClick={handleNewChat}
-              className="w-full justify-center gap-2 h-11 rounded-xl font-medium shadow-sm hover:shadow-md"
+              className="w-full justify-start gap-2 hover-scale smooth-transition mb-3"
               style={{ background: "var(--gradient-primary)" }}
             >
               <Plus className="w-4 h-4" />
@@ -194,65 +193,58 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 type="text"
-                placeholder="Search..."
+                placeholder="Search chats..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 h-10 bg-muted/50 border-0 focus-visible:ring-1"
+                className="pl-9 h-9"
               />
             </div>
           </div>
 
-          {/* Chats Section */}
-          <div className="flex-1 overflow-hidden flex flex-col">
-            <div className="px-6 py-2">
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Recent</span>
-            </div>
-
-            <ScrollArea className="flex-1 px-2">
-              <div className="space-y-1 pb-4">
-                {filteredChats.map((chat) => (
-                  <ChatItem
-                    key={chat.id}
-                    chat={chat}
-                    isActive={currentChatId === chat.id}
-                    onSelect={() => handleSelectChat(chat.id)}
-                    onDelete={() => handleDeleteChat(chat.id)}
-                    onRename={(newTitle) => handleRenameChat(chat.id, newTitle)}
-                    onDuplicate={() => handleDuplicateChat(chat.id)}
-                  />
-                ))}
-              </div>
-            </ScrollArea>
+          {/* Chats Label */}
+          <div className="px-4 pt-4 pb-2">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Chats</span>
           </div>
 
-          <div className="p-3 border-t border-border/50 bg-muted/30 space-y-1">
+          <ScrollArea className="flex-1 px-2">
+            {filteredChats.map((chat) => (
+              <ChatItem
+                key={chat.id}
+                chat={chat}
+                isActive={currentChatId === chat.id}
+                onSelect={() => handleSelectChat(chat.id)}
+                onDelete={() => handleDeleteChat(chat.id)}
+                onRename={(newTitle) => handleRenameChat(chat.id, newTitle)}
+                onDuplicate={() => handleDuplicateChat(chat.id)}
+              />
+            ))}
+          </ScrollArea>
+
+          <div className="p-4 border-t border-border space-y-2">
             <Button
               variant="ghost"
-              size="sm"
-              className="w-full justify-start gap-3 h-9 hover:bg-background/50 text-muted-foreground hover:text-foreground"
+              className="w-full justify-start gap-2 smooth-transition hover-scale"
               onClick={() => toast.info("Contact support coming soon!")}
             >
               <HelpCircle className="w-4 h-4" />
-              <span className="text-sm">Support</span>
-              <span className="ml-auto text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full">Soon</span>
+              Contact Support
+              <span className="ml-auto text-xs text-muted-foreground">Soon</span>
             </Button>
             <Button
               variant="ghost"
-              size="sm"
-              className="w-full justify-start gap-3 h-9 hover:bg-background/50 text-muted-foreground hover:text-foreground"
+              className="w-full justify-start gap-2 smooth-transition hover-scale"
               onClick={() => setDarkMode(!darkMode)}
             >
               {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-              <span className="text-sm">{darkMode ? "Light" : "Dark"}</span>
+              {darkMode ? "Light Mode" : "Dark Mode"}
             </Button>
             <Button
               variant="ghost"
-              size="sm"
-              className="w-full justify-start gap-3 h-9 hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
+              className="w-full justify-start gap-2 text-destructive hover:text-destructive smooth-transition hover-scale"
               onClick={handleLogout}
             >
               <LogOut className="w-4 h-4" />
-              <span className="text-sm">Logout</span>
+              Logout
             </Button>
           </div>
         </div>
