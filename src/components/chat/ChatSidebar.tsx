@@ -181,19 +181,18 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
                   <Sparkles className="w-5 h-5 text-primary" />
                 </div>
               </div>
-              <span className="text-xl font-space font-bold tracking-tight bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              <span className="text-xl font-semibold">
                 Nova AI
               </span>
             </div>
             
             <Button
               onClick={handleNewChat}
-              className="w-full justify-center gap-2 h-11 rounded-xl font-medium relative overflow-hidden group border-0 shadow-lg hover:shadow-xl"
+              className="w-full justify-start gap-2 hover-scale smooth-transition mb-3"
               style={{ background: "var(--gradient-primary)" }}
             >
-              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-              <Plus className="w-5 h-5 relative z-10" />
-              <span className="relative z-10 font-space font-semibold">New Chat</span>
+              <Plus className="w-4 h-4" />
+              New Chat
             </Button>
 
             <div className="relative mt-3">
