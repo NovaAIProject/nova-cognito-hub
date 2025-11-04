@@ -17,6 +17,7 @@ interface MessageBubbleProps {
 
 const MessageBubble = ({ message }: MessageBubbleProps) => {
   const [copied, setCopied] = useState(false);
+  const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const [username, setUsername] = useState<string>("U");
   const [displayedContent, setDisplayedContent] = useState("");
   const isUser = message.role === "user";
@@ -77,6 +78,13 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleCopyCode = async (code: string, language: string) => {
+    await navigator.clipboard.writeText(code);
+    setCopiedCode(language);
+    toast.success(`${language.toUpperCase()} code copied`);
+    setTimeout(() => setCopiedCode(null), 2000);
+  };
+
   return (
     <div
       className={`flex gap-3 message-appear ${
@@ -103,14 +111,27 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
                 code: ({ node, inline, className, children, ...props }: any) => {
                   const match = /language-(\w+)/.exec(className || '');
                   const language = match ? match[1] : '';
+                  const codeString = String(children).replace(/\n$/, '');
                   
                   return !inline ? (
                     <div className="my-4 rounded-xl overflow-hidden border border-border bg-secondary/50">
-                      {language && (
-                        <div className="px-4 py-2 bg-muted/50 border-b border-border text-xs font-mono text-muted-foreground uppercase">
-                          {language}
-                        </div>
-                      )}
+                      <div className="px-4 py-2 bg-muted/50 border-b border-border flex items-center justify-between">
+                        <span className="text-xs font-mono text-muted-foreground uppercase">
+                          {language || 'code'}
+                        </span>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleCopyCode(codeString, language || 'code')}
+                          className="h-6 px-2 hover:bg-background/50"
+                        >
+                          {copiedCode === (language || 'code') ? (
+                            <Check className="w-3 h-3 text-green-500" />
+                          ) : (
+                            <Copy className="w-3 h-3" />
+                          )}
+                        </Button>
+                      </div>
                       <pre className="p-4 overflow-x-auto m-0">
                         <code className={`language-${language} text-sm font-mono`} {...props}>
                           {children}
