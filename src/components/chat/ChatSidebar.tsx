@@ -173,23 +173,30 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
         <div className={`flex flex-col h-full transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}>
           {/* Header with Logo and Title */}
           <div className="p-4 border-b border-border">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-primary-foreground" />
+            <div className="flex items-center gap-3 mb-4">
+              <div className="relative w-9 h-9 rounded-xl overflow-hidden shadow-lg">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-accent animate-pulse" style={{ animationDuration: '3s' }} />
+                <div className="absolute inset-[2px] bg-background rounded-[10px]" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Sparkles className="w-5 h-5 text-primary" />
+                </div>
               </div>
-              <span className="text-xl font-semibold">Nova AI</span>
+              <span className="text-xl font-space font-bold tracking-tight bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                Nova AI
+              </span>
             </div>
             
             <Button
               onClick={handleNewChat}
-              className="w-full justify-start gap-2 hover-scale smooth-transition mb-3"
+              className="w-full justify-center gap-2 h-11 rounded-xl font-medium relative overflow-hidden group border-0 shadow-lg hover:shadow-xl"
               style={{ background: "var(--gradient-primary)" }}
             >
-              <Plus className="w-4 h-4" />
-              New Chat
+              <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+              <Plus className="w-5 h-5 relative z-10" />
+              <span className="relative z-10 font-space font-semibold">New Chat</span>
             </Button>
 
-            <div className="relative">
+            <div className="relative mt-3">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 type="text"
