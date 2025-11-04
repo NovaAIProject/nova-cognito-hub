@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Plus, MessageSquare, Settings, Moon, Sun, LogOut, HelpCircle } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Plus, MessageSquare, Settings, Moon, Sun, LogOut, HelpCircle, Search, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import ChatItem from "./ChatItem";
@@ -23,8 +24,13 @@ interface ChatSidebarProps {
 
 const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: ChatSidebarProps) => {
   const [chats, setChats] = useState<Chat[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [darkMode, setDarkMode] = useState(true);
   const navigate = useNavigate();
+
+  const filteredChats = chats.filter(chat => 
+    chat.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
@@ -165,19 +171,43 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
         ${isOpen ? 'w-64 translate-x-0' : 'w-0 -translate-x-full md:translate-x-0'}
       `}>
         <div className={`flex flex-col h-full transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}>
-          <div className="p-4 border-b border-border md:hidden">
+          {/* Header with Logo and Title */}
+          <div className="p-4 border-b border-border">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
+                <Sparkles className="w-5 h-5 text-primary-foreground" />
+              </div>
+              <span className="text-xl font-semibold">Nova AI</span>
+            </div>
+            
             <Button
               onClick={handleNewChat}
-              className="w-full justify-start gap-2 hover-scale smooth-transition"
+              className="w-full justify-start gap-2 hover-scale smooth-transition mb-3"
               style={{ background: "var(--gradient-primary)" }}
             >
               <Plus className="w-4 h-4" />
               New Chat
             </Button>
+
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                type="text"
+                placeholder="Search chats..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9 h-9"
+              />
+            </div>
           </div>
 
-          <ScrollArea className="flex-1 p-2">
-            {chats.map((chat) => (
+          {/* Chats Label */}
+          <div className="px-4 pt-4 pb-2">
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Chats</span>
+          </div>
+
+          <ScrollArea className="flex-1 px-2">
+            {filteredChats.map((chat) => (
               <ChatItem
                 key={chat.id}
                 chat={chat}

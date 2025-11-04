@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Send, Square } from "lucide-react";
+import { ArrowUp, Square } from "lucide-react";
 import { toast } from "sonner";
 
 interface ChatInputProps {
@@ -201,10 +201,10 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
               onClick={handleSend}
               disabled={!message.trim()}
               size="icon"
-              className="h-[44px] w-[44px] rounded-lg smooth-transition hover-scale disabled:opacity-50"
+              className="h-[44px] w-[44px] rounded-full smooth-transition hover-scale disabled:opacity-50"
               style={{ background: "var(--gradient-primary)" }}
             >
-              <Send className="w-4 h-4" />
+              <ArrowUp className="w-5 h-5" />
             </Button>
           )}
         </div>

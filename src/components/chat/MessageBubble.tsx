@@ -138,9 +138,6 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
                 <Copy className="w-3 h-3" />
               )}
             </Button>
-            {message.model && (
-              <span className="text-xs text-muted-foreground">{message.model}</span>
-            )}
           </div>
         )}
       </div>
