@@ -79,6 +79,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
             message: userMessage,
             model: model,
             generateImage: false,
+            chatId: currentChatId,
           }),
         }
       );

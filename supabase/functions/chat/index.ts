@@ -1,5 +1,6 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -13,10 +14,38 @@ serve(async (req) => {
   }
 
   try {
-    const { message, model = "google/gemini-2.5-flash", generateImage = false } = await req.json();
+    const { message, model = "google/gemini-2.5-flash", generateImage = false, chatId } = await req.json();
 
     if (!message) {
       throw new Error("Message is required");
+    }
+
+    // Initialize Supabase client to fetch conversation history
+    const supabaseClient = createClient(
+      Deno.env.get('SUPABASE_URL') ?? '',
+      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
+      {
+        global: {
+          headers: { Authorization: req.headers.get('Authorization')! },
+        },
+      }
+    );
+
+    // Fetch conversation history if chatId is provided
+    let conversationHistory: any[] = [];
+    if (chatId) {
+      const { data: messages, error } = await supabaseClient
+        .from('messages')
+        .select('role, content')
+        .eq('chat_id', chatId)
+        .order('created_at', { ascending: true });
+
+      if (!error && messages) {
+        conversationHistory = messages.map(msg => ({
+          role: msg.role,
+          content: msg.content.replace(/\n\n_Response time: \d+s_$/, '') // Remove response time from content
+        }));
+      }
     }
 
     // Handle Claude models separately
@@ -36,12 +65,9 @@ serve(async (req) => {
         body: JSON.stringify({
           model: model,
           max_tokens: 4096,
-          messages: [
-            {
-              role: "user",
-              content: message,
-            },
-          ],
+          messages: conversationHistory.length > 0 
+            ? [...conversationHistory, { role: "user", content: message }]
+            : [{ role: "user", content: message }],
           system: "You are Nova AI, a helpful and intelligent assistant. Provide clear, concise, and helpful responses. When writing code, always use proper markdown code blocks with language specifications.",
         }),
       });
@@ -73,20 +99,18 @@ serve(async (req) => {
       throw new Error("LOVABLE_API_KEY is not configured");
     }
 
+    const systemMessage = {
+      role: "system",
+      content: generateImage 
+        ? "You are Nova AI. Generate images based on user descriptions."
+        : "You are Nova AI, a helpful and intelligent assistant. Provide clear, concise, and helpful responses. When writing code, always use proper markdown code blocks with language specifications.",
+    };
+
     const requestBody: any = {
       model: generateImage ? "google/gemini-2.5-flash-image-preview" : model,
-      messages: [
-        {
-          role: "system",
-          content: generateImage 
-            ? "You are Nova AI. Generate images based on user descriptions."
-            : "You are Nova AI, a helpful and intelligent assistant. Provide clear, concise, and helpful responses. When writing code, always use proper markdown code blocks with language specifications.",
-        },
-        {
-          role: "user",
-          content: message,
-        },
-      ],
+      messages: conversationHistory.length > 0
+        ? [systemMessage, ...conversationHistory, { role: "user", content: message }]
+        : [systemMessage, { role: "user", content: message }],
     };
 
     if (generateImage) {
