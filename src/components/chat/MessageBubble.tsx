@@ -97,19 +97,28 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
               : "bg-card/50 mr-auto max-w-[90%]"
           }`}
         >
-          <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:mt-4 prose-headings:mb-2 prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-p:my-2 prose-pre:bg-muted prose-pre:p-4 prose-pre:rounded-lg prose-pre:overflow-x-auto prose-code:text-sm prose-code:before:content-none prose-code:after:content-none prose-strong:font-bold prose-strong:text-foreground prose-img:rounded-lg prose-img:shadow-lg">
+          <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:mt-4 prose-headings:mb-2 prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-p:my-2 prose-pre:bg-secondary/50 prose-pre:p-4 prose-pre:rounded-xl prose-pre:overflow-x-auto prose-pre:border prose-pre:border-border prose-code:text-sm prose-code:before:content-none prose-code:after:content-none prose-strong:font-bold prose-strong:text-foreground prose-img:rounded-lg prose-img:shadow-lg">
             <ReactMarkdown
               components={{
                 code: ({ node, inline, className, children, ...props }: any) => {
                   const match = /language-(\w+)/.exec(className || '');
+                  const language = match ? match[1] : '';
+                  
                   return !inline ? (
-                    <div className="my-4">
-                      <code className={className} {...props}>
-                        {children}
-                      </code>
+                    <div className="my-4 rounded-xl overflow-hidden border border-border bg-secondary/50">
+                      {language && (
+                        <div className="px-4 py-2 bg-muted/50 border-b border-border text-xs font-mono text-muted-foreground uppercase">
+                          {language}
+                        </div>
+                      )}
+                      <pre className="p-4 overflow-x-auto m-0">
+                        <code className={`language-${language} text-sm font-mono`} {...props}>
+                          {children}
+                        </code>
+                      </pre>
                     </div>
                   ) : (
-                    <code className="bg-muted px-1 py-0.5 rounded text-sm" {...props}>
+                    <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono" {...props}>
                       {children}
                     </code>
                   );

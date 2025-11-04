@@ -61,8 +61,8 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
 
       if (userMsgError) throw userMsgError;
 
-      // Small delay to ensure user message renders before showing thinking
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // Delay to ensure user message renders before showing thinking
+      await new Promise(resolve => setTimeout(resolve, 400));
       
       setIsGenerating(true);
       onGeneratingChange?.(true);
