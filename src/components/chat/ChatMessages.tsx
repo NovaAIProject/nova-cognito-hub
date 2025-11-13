@@ -115,7 +115,7 @@ const ChatMessages = ({ chatId, isGenerating }: ChatMessagesProps) => {
           </div>
           <div>
             <h2 className="text-2xl font-bold gradient-text mb-2 font-poppins">
-              Welcome to Nova AI
+              How can I help you today?
             </h2>
             <p className="text-muted-foreground mb-6">
               Ask me anything - I'm powered by the latest AI models
@@ -146,7 +146,7 @@ const ChatMessages = ({ chatId, isGenerating }: ChatMessagesProps) => {
   }
 
   return (
-    <div className="flex-1 overflow-hidden" ref={scrollRef}>
+    <div className="flex-1 overflow-y-auto" ref={scrollRef}>
       <ScrollArea className="h-full p-4">
         <div className="max-w-3xl mx-auto space-y-4 animate-fade-in">
           {messages.map((message) => (
