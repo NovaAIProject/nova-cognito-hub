@@ -113,33 +113,9 @@ const ChatMessages = ({ chatId, isGenerating }: ChatMessagesProps) => {
           >
             <Sparkles className="w-10 h-10 text-white" />
           </div>
-          <div>
-            <h2 className="text-2xl font-bold gradient-text mb-2 font-poppins">
-              How can I help you today?
-            </h2>
-            <p className="text-muted-foreground mb-6">
-              Ask me anything - I'm powered by the latest AI models
-            </p>
-          </div>
-          
-          <div className="mt-8 max-w-2xl mx-auto">
-            <div className="flex gap-2 justify-center">
-              <button className="group glass-panel rounded-lg px-3 py-2 hover:shadow-smooth hover-scale smooth-transition border border-border/50 hover:border-primary/30 flex items-center gap-2">
-                <span className="text-base">🎨</span>
-                <span className="text-sm">Create image</span>
-              </button>
-              
-              <button className="group glass-panel rounded-lg px-3 py-2 hover:shadow-smooth hover-scale smooth-transition border border-border/50 hover:border-primary/30 flex items-center gap-2">
-                <span className="text-base">📝</span>
-                <span className="text-sm">Summarize</span>
-              </button>
-              
-              <button className="group glass-panel rounded-lg px-3 py-2 hover:shadow-smooth hover-scale smooth-transition border border-border/50 hover:border-primary/30 flex items-center gap-2">
-                <span className="text-base">💻</span>
-                <span className="text-sm">Write code</span>
-              </button>
-            </div>
-          </div>
+          <h2 className="text-2xl font-bold gradient-text font-poppins">
+            How can I help you today?
+          </h2>
         </div>
       </div>
     );
