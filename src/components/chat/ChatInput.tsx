@@ -168,48 +168,19 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
       <div className="max-w-3xl mx-auto space-y-3">
         {!chatId && <QuickPrompts onPromptSelect={handlePromptSelect} />}
         
-        <div className="flex items-center gap-2 justify-between">
+        <div className="flex items-center gap-2">
           <Select value={model} onValueChange={setModel}>
-            <SelectTrigger className="w-auto min-w-[200px]">
+            <SelectTrigger className="w-[180px]">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="google/gemini-2.5-flash-lite">
-                <div className="flex flex-col items-start">
-                  <span className="font-medium">Gemini Flash Lite</span>
-                  <span className="text-xs text-muted-foreground">⚡ Fastest</span>
-                </div>
-              </SelectItem>
-              <SelectItem value="google/gemini-2.5-flash">
-                <div className="flex flex-col items-start">
-                  <span className="font-medium">Gemini Flash</span>
-                  <span className="text-xs text-muted-foreground">⚖️ Balanced</span>
-                </div>
-              </SelectItem>
-              <SelectItem value="google/gemini-2.5-pro">
-                <div className="flex flex-col items-start">
-                  <span className="font-medium">Gemini Pro</span>
-                  <span className="text-xs text-muted-foreground">🧠 Most capable</span>
-                </div>
-              </SelectItem>
-              <SelectItem value="openai/gpt-5-mini">
-                <div className="flex flex-col items-start">
-                  <span className="font-medium">GPT-5 Mini</span>
-                  <span className="text-xs text-muted-foreground">💨 Fast</span>
-                </div>
-              </SelectItem>
-              <SelectItem value="openai/gpt-5">
-                <div className="flex flex-col items-start">
-                  <span className="font-medium">GPT-5</span>
-                  <span className="text-xs text-muted-foreground">⭐ Premium</span>
-                </div>
-              </SelectItem>
+              <SelectItem value="google/gemini-2.5-flash-lite">Gemini Flash Lite</SelectItem>
+              <SelectItem value="google/gemini-2.5-flash">Gemini Flash</SelectItem>
+              <SelectItem value="google/gemini-2.5-pro">Gemini Pro</SelectItem>
+              <SelectItem value="openai/gpt-5-mini">GPT-5 Mini</SelectItem>
+              <SelectItem value="openai/gpt-5">GPT-5</SelectItem>
             </SelectContent>
           </Select>
-          
-          <div className="text-xs text-muted-foreground">
-            {message.length} chars
-          </div>
         </div>
 
         <div className="flex gap-2 items-end">
@@ -219,7 +190,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleKeyPress}
             placeholder="Ask Nova AI anything..."
-            className="min-h-[60px] max-h-[200px] resize-none smooth-transition py-3 flex-1"
+            className="min-h-[44px] max-h-[120px] resize-none smooth-transition py-3 flex-1"
             disabled={isGenerating}
           />
 

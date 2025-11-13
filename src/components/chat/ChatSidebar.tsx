@@ -150,7 +150,6 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
 
   const handleSelectChat = (id: string) => {
     onChatSelect(id);
-    onClose();
   };
 
   return (
@@ -164,13 +163,14 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
       )}
       
       {/* Sidebar */}
-      <div className={`
-        fixed md:relative inset-y-0 left-0 z-50
+      <aside className={`
+        ${isOpen ? 'w-64' : 'w-0 md:w-0'}
         border-r border-border glass-panel flex flex-col
         transition-all duration-300 ease-in-out
-        ${isOpen ? 'w-64 translate-x-0' : 'w-0 -translate-x-full md:translate-x-0'}
+        overflow-hidden
+        ${isOpen ? '' : 'md:hidden'}
       `}>
-        <div className={`flex flex-col h-full transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0'}`}>
+        <div className="flex flex-col h-full w-64">{/* Fixed width content */}
           {/* Header with Logo and Title */}
           <div className="p-4 border-b border-border">
             <div className="flex items-center gap-3 mb-4">
@@ -254,7 +254,7 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
             </Button>
           </div>
         </div>
-      </div>
+      </aside>
     </>
   );
 };
