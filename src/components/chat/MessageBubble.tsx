@@ -29,27 +29,10 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
     ? message.content.replace(/\n\n_Response time: \d+s_$/, '')
     : message.content;
 
-  // Typing animation for AI responses
+  // Instant display for AI responses
   useEffect(() => {
-    if (!isUser && contentWithoutTime.length > 100) {
-      setDisplayedContent("");
-      let index = 0;
-      const interval = setInterval(() => {
-        if (index < contentWithoutTime.length) {
-          setDisplayedContent(contentWithoutTime.slice(0, index + 1));
-          index++;
-          // Trigger scroll on parent during animation
-          const event = new CustomEvent('messageUpdate');
-          window.dispatchEvent(event);
-        } else {
-          clearInterval(interval);
-        }
-      }, 3);
-      return () => clearInterval(interval);
-    } else {
-      setDisplayedContent(contentWithoutTime);
-    }
-  }, [contentWithoutTime, isUser]);
+    setDisplayedContent(contentWithoutTime);
+  }, [contentWithoutTime]);
 
   useEffect(() => {
     if (isUser) {

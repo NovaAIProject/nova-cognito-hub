@@ -21,7 +21,7 @@ interface ChatInputProps {
 
 const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatInputProps) => {
   const [message, setMessage] = useState("");
-  const [model, setModel] = useState("google/gemini-2.5-flash");
+  const [model, setModel] = useState("google/gemini-2.5-flash-lite");
   const [isGenerating, setIsGenerating] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -166,13 +166,11 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
+              <SelectItem value="google/gemini-2.5-flash-lite">Gemini Flash Lite (Fastest)</SelectItem>
+              <SelectItem value="google/gemini-2.5-flash">Gemini Flash</SelectItem>
+              <SelectItem value="google/gemini-2.5-pro">Gemini Pro</SelectItem>
+              <SelectItem value="openai/gpt-5-mini">GPT-5 Mini</SelectItem>
               <SelectItem value="openai/gpt-5">GPT-5</SelectItem>
-              <SelectItem value="google/gemini-2.5-flash">
-                Gemini 2.5 Flash
-              </SelectItem>
-              <SelectItem value="google/gemini-2.5-pro">
-                Gemini 2.5 Pro
-              </SelectItem>
             </SelectContent>
           </Select>
         </div>

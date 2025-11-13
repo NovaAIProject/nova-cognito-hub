@@ -21,7 +21,7 @@ const Index = () => {
           </h1>
           
           <p className="text-xl md:text-2xl text-muted-foreground mb-8 animate-fade-in font-poppins">
-            Experience the future of AI conversation. Generate images, code, and intelligent responses
+            Experience the future of AI conversation for <span className="text-primary font-semibold">free</span>. Generate images, code, and intelligent responses
             powered by GPT-5 and Gemini models.
           </p>
 
