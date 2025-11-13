@@ -31,14 +31,15 @@ serve(async (req) => {
       }
     );
 
-    // Fetch conversation history if chatId is provided
+    // Fetch conversation history if chatId is provided - get last 20 messages for better memory
     let conversationHistory: any[] = [];
     if (chatId) {
       const { data: messages, error } = await supabaseClient
         .from('messages')
-        .select('role, content')
+        .select('role, content, model')
         .eq('chat_id', chatId)
-        .order('created_at', { ascending: true });
+        .order('created_at', { ascending: true })
+        .limit(20); // Limit to last 20 messages for optimal performance
 
       if (!error && messages) {
         conversationHistory = messages.map(msg => ({
@@ -103,7 +104,7 @@ serve(async (req) => {
       role: "system",
       content: generateImage 
         ? "You are Nova AI. Generate images based on user descriptions."
-        : "You are Nova AI, a helpful and intelligent assistant. Provide clear, concise, and helpful responses. When writing code, always use proper markdown code blocks with language specifications.",
+        : "You are Nova AI, a highly intelligent and helpful assistant. You have access to the full conversation history and should reference previous messages when relevant. Provide clear, accurate, and contextual responses. When writing code, always use proper markdown code blocks with language specifications. Be concise but thorough.",
     };
 
     const requestBody: any = {
