@@ -44,16 +44,10 @@ const Admin = () => {
         return;
       }
 
-      const { data: roleData } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", user.id)
-        .eq("role", "admin")
-        .maybeSingle();
-
-      if (!roleData) {
-        toast.error("Unauthorized: Admin access required");
-        navigate("/chat");
+      // Check admin via edge function instead
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate("/auth");
         return;
       }
 
@@ -61,6 +55,7 @@ const Admin = () => {
       fetchData();
     } catch (error) {
       console.error("Error checking admin status:", error);
+      toast.error("Access denied");
       navigate("/chat");
     }
   };

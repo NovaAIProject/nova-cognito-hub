@@ -77,7 +77,12 @@ const Chat = () => {
     <div className="flex h-screen bg-background overflow-hidden">
       <ChatSidebar
         currentChatId={currentChatId}
-        onChatSelect={setCurrentChatId}
+        onChatSelect={(id) => {
+          setCurrentChatId(id);
+          if (window.innerWidth < 768) {
+            setSidebarOpen(false);
+          }
+        }}
         userId={session.user.id}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
@@ -88,7 +93,7 @@ const Chat = () => {
         
         <div className="relative z-10 flex flex-col h-full">
           <ChatHeader 
-            onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
+            onToggleSidebar={() => setSidebarOpen(prev => !prev)}
             onNewChat={handleNewChat}
             sidebarOpen={sidebarOpen}
           />
