@@ -194,8 +194,8 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
         <div className="flex flex-col h-full w-64">{/* Fixed width content */}
           {/* Header with Logo */}
           <div className="p-4 border-b border-border">
-            <div className="flex items-center justify-center mb-4">
-              <div className="relative w-10 h-10 rounded-xl overflow-hidden shadow-lg">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="relative w-9 h-9 rounded-xl overflow-hidden shadow-lg">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-accent animate-pulse" style={{ animationDuration: '3s' }} />
                 <div className="absolute inset-[2px] bg-background rounded-[10px]" />
                 <div className="absolute inset-0 flex items-center justify-center">
