@@ -44,14 +44,14 @@ const ChatItem = ({
 
   return (
     <div
-      className={`group flex items-center gap-2 p-3 rounded-lg mb-1 smooth-transition cursor-pointer ${
+      className={`group flex items-center gap-2 p-2 pr-1 rounded-lg mb-1 smooth-transition cursor-pointer ${
         isActive
           ? "bg-primary/10 border border-primary/20"
           : "hover:bg-secondary/50"
       }`}
       onClick={onSelect}
     >
-      <div className="flex items-center gap-2 flex-1 min-w-0">
+      <div className="flex items-center gap-2 flex-1 min-w-0 overflow-hidden">
         {chat.pinned && <Pin className="w-3 h-3 text-primary flex-shrink-0" />}
         <MessageSquare className="w-4 h-4 flex-shrink-0" />
       
@@ -64,12 +64,12 @@ const ChatItem = ({
             if (e.key === "Enter") handleRename();
             if (e.key === "Escape") setIsEditing(false);
           }}
-          className="h-6 text-sm"
+          className="h-6 text-sm flex-1"
           autoFocus
           onClick={(e) => e.stopPropagation()}
         />
       ) : (
-        <span className="flex-1 truncate text-sm">{chat.title}</span>
+        <span className="flex-1 truncate text-sm pr-2">{chat.title}</span>
       )}
       </div>
 
@@ -78,7 +78,7 @@ const ChatItem = ({
           <Button
             variant="ghost"
             size="sm"
-            className="opacity-50 group-hover:opacity-100 hover:opacity-100 h-7 w-7 p-0 flex-shrink-0 hover:bg-foreground/10 ml-1"
+            className="opacity-60 group-hover:opacity-100 hover:opacity-100 h-8 w-8 p-0 flex-shrink-0 hover:bg-foreground/10"
           >
             <MoreVertical className="w-4 h-4" />
           </Button>
