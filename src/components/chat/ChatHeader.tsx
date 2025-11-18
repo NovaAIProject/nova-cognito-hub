@@ -28,7 +28,7 @@ const ChatHeader = ({ onToggleSidebar, onNewChat, sidebarOpen }: ChatHeaderProps
           </div>
           <div>
             <h1 className="font-bold text-lg md:text-xl gradient-text font-poppins">Nova AI</h1>
-            <p className="text-xs text-muted-foreground hidden sm:block">Powered by advanced AI models</p>
+            <p className="text-xs text-muted-foreground hidden sm:block">Your intelligent AI companion</p>
           </div>
         </div>
         
