@@ -33,10 +33,6 @@ const Auth = () => {
 
         setShowVerification(true);
         toast.success(`Verification code sent to ${email}`);
-        // In development, show the code (remove in production!)
-        if (data.code) {
-          toast.info(`Your verification code is: ${data.code}`);
-        }
       } catch (error: any) {
         toast.error(error.message);
       } finally {

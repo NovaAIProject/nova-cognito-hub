@@ -51,6 +51,7 @@ const Chat = () => {
 
   const handleNewChat = async () => {
     setCurrentChatId(null);
+    setIsGenerating(false);
     toast.success("New chat ready");
   };
 

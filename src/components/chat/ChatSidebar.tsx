@@ -198,8 +198,7 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
             
             <Button
               onClick={handleNewChat}
-              variant="ghost"
-              className="w-full justify-start gap-2 hover-scale smooth-transition mb-3 bg-transparent hover:bg-accent/50"
+              className="w-full justify-start gap-2 bg-transparent border border-border/50 hover:bg-muted/50 hover:border-border mb-3"
             >
               <Plus className="w-4 h-4" />
               New Chat
