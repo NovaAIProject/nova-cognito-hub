@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -28,6 +28,13 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
+
+  // Reset hasSentMessage when chatId changes to null (new chat)
+  useEffect(() => {
+    if (!chatId) {
+      setHasSentMessage(false);
+    }
+  }, [chatId]);
 
   const handleSend = async () => {
     if (!message.trim() || isGenerating) return;
@@ -231,7 +238,13 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
         ? 'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-full max-w-2xl px-4' 
         : 'p-4 border-t border-border bg-background'
     }`}>
-      <div className={`flex flex-col gap-3 transition-all duration-500 ${!hasSentMessage ? 'items-center' : 'max-w-4xl mx-auto'}`}>
+      <div className={`flex flex-col gap-6 transition-all duration-500 ${!hasSentMessage ? 'items-center' : 'max-w-4xl mx-auto'}`}>
+        {!hasSentMessage && (
+          <h2 className="text-4xl font-bold gradient-text font-poppins animate-fade-in text-center">
+            How can I help you today?
+          </h2>
+        )}
+
         <div className={`flex items-center justify-center gap-2 transition-opacity duration-300 ${!hasSentMessage ? 'opacity-100' : 'opacity-0 hidden'}`}>
           <Select value={model} onValueChange={setModel}>
             <SelectTrigger className="w-48 h-9 bg-background/50 border-border/50">
@@ -249,7 +262,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
         </div>
 
         <div className="w-full">
-          <div className="relative flex items-center gap-2 bg-background border border-border rounded-full pr-2 shadow-lg">
+          <div className="relative flex items-center gap-2 bg-background border border-border/50 rounded-full pr-2 shadow-md hover:shadow-lg transition-shadow">
             <Textarea
               ref={textareaRef}
               value={message}
@@ -264,7 +277,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
               variant="ghost"
               size="icon"
               onClick={isRecording ? stopRecording : startRecording}
-              className={`rounded-full h-10 w-10 flex-shrink-0 ${isRecording ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90' : ''}`}
+              className={`rounded-full h-9 w-9 flex-shrink-0 transition-all ${isRecording ? 'bg-destructive/20 text-destructive hover:bg-destructive/30' : 'hover:bg-muted'}`}
             >
               {isRecording ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
             </Button>
@@ -273,26 +286,26 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
               <Button
                 onClick={handleStopGenerating}
                 size="icon"
-                variant="destructive"
-                className="rounded-full h-10 w-10 flex-shrink-0"
+                className="rounded-full h-9 w-9 flex-shrink-0 bg-destructive/90 hover:bg-destructive text-white"
               >
-                <Square className="w-4 h-4" />
+                <Square className="w-3.5 h-3.5 fill-current" />
               </Button>
             ) : (
               <Button
                 onClick={handleSend}
                 disabled={!message.trim()}
                 size="icon"
-                className="rounded-full h-10 w-10 bg-primary hover:bg-primary/90 flex-shrink-0"
+                className="rounded-full h-9 w-9 flex-shrink-0 disabled:opacity-40 transition-all"
+                style={{ background: !message.trim() ? undefined : "var(--gradient-primary)" }}
               >
-                <ArrowUp className="w-4 h-4" />
+                <ArrowUp className="w-4 h-4 text-white" />
               </Button>
             )}
           </div>
         </div>
 
         {hasSentMessage && (
-          <div className="flex items-center justify-center gap-2 mt-2">
+          <div className="flex items-center justify-center gap-2">
             <Select value={model} onValueChange={setModel}>
               <SelectTrigger className="w-48 h-9 bg-background/50 border-border/50">
                 <SelectValue />
