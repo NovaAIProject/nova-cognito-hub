@@ -50,27 +50,8 @@ const Chat = () => {
   }
 
   const handleNewChat = async () => {
-    try {
-      const { data, error } = await supabase
-        .from("chats")
-        .insert([{ user_id: session.user.id, title: "New Chat" }])
-        .select()
-        .single();
-
-      if (error) {
-        console.error("Failed to create chat:", error);
-        toast.error("Failed to create chat");
-        return;
-      }
-
-      if (data) {
-        setCurrentChatId(data.id);
-        toast.success("New chat created");
-      }
-    } catch (error) {
-      console.error("Error creating chat:", error);
-      toast.error("Failed to create chat");
-    }
+    setCurrentChatId(null);
+    toast.success("New chat ready");
   };
 
   return (

@@ -127,6 +127,15 @@ All colors MUST be HSL.
     font-feature-settings: "rlig" 1, "calt" 1;
   }
   
+  /* Default to light mode */
+  html {
+    color-scheme: light;
+  }
+  
+  html.dark {
+    color-scheme: dark;
+  }
+  
   .gradient-text {
     background: var(--gradient-primary);
     -webkit-background-clip: text;

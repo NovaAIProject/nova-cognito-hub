@@ -106,16 +106,21 @@ const ChatMessages = ({ chatId, isGenerating }: ChatMessagesProps) => {
   if (!chatId) {
     return (
       <div className="flex-1 flex items-center justify-center p-4">
-        <div className="text-center space-y-6 max-w-2xl">
+        <div className="text-center space-y-4 max-w-2xl animate-fade-in">
           <div
-            className="w-20 h-20 rounded-full mx-auto flex items-center justify-center"
+            className="w-20 h-20 rounded-full mx-auto flex items-center justify-center animate-scale-in"
             style={{ background: "var(--gradient-primary)" }}
           >
             <Sparkles className="w-10 h-10 text-white" />
           </div>
-          <h2 className="text-2xl font-bold gradient-text font-poppins">
-            How can I help you today?
-          </h2>
+          <div className="space-y-2">
+            <h2 className="text-2xl font-bold gradient-text font-poppins">
+              How can I help you today?
+            </h2>
+            <p className="text-sm text-muted-foreground">
+              Ask me anything...
+            </p>
+          </div>
         </div>
       </div>
     );
