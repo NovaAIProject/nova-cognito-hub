@@ -44,13 +44,11 @@ serve(async (req) => {
     // For now, we'll just log the code (you can see it in the function logs)
     console.log(`Verification code for ${email}: ${code}`);
 
-    // Return success (in production, don't return the code!)
+    // Return success
     return new Response(
       JSON.stringify({ 
         success: true,
-        message: 'Verification code sent',
-        // TODO: Remove this in production! Only for testing
-        code: code 
+        message: 'Verification code sent'
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );

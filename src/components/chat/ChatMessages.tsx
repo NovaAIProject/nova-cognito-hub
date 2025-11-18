@@ -105,19 +105,19 @@ const ChatMessages = ({ chatId, isGenerating }: ChatMessagesProps) => {
 
   if (!chatId) {
     return (
-      <div className="flex-1 flex items-center justify-center p-4">
-        <div className="text-center space-y-4 max-w-2xl animate-fade-in">
+      <div className="flex-1 flex flex-col items-center justify-start p-4 pt-32">
+        <div className="text-center space-y-4 max-w-2xl">
           <div
             className="w-20 h-20 rounded-full mx-auto flex items-center justify-center animate-scale-in"
             style={{ background: "var(--gradient-primary)" }}
           >
-            <Sparkles className="w-10 h-10 text-white" />
+            <Sparkles className="w-10 h-10 text-white animate-pulse" />
           </div>
-          <div className="space-y-2">
-            <h2 className="text-2xl font-bold gradient-text font-poppins">
+          <div className="space-y-2 animate-fade-in">
+            <h2 className="text-4xl font-bold gradient-text font-poppins animate-fade-in">
               How can I help you today?
             </h2>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-base text-muted-foreground animate-fade-in" style={{ animationDelay: '0.1s' }}>
               Ask me anything...
             </p>
           </div>

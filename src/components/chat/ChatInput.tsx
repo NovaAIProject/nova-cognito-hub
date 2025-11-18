@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/select";
 import { ArrowUp, Square, Mic, MicOff } from "lucide-react";
 import { toast } from "sonner";
-import QuickPrompts from "./QuickPrompts";
 
 interface ChatInputProps {
   chatId: string | null;
@@ -25,18 +24,15 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
   const [model, setModel] = useState("google/gemini-2.5-flash-lite");
   const [isGenerating, setIsGenerating] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
+  const [hasSentMessage, setHasSentMessage] = useState(!!chatId);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
-  const handlePromptSelect = (prompt: string) => {
-    setMessage(prompt + " ");
-    textareaRef.current?.focus();
-  };
-
   const handleSend = async () => {
     if (!message.trim() || isGenerating) return;
 
+    setHasSentMessage(true);
     let currentChatId = chatId;
 
     if (!currentChatId) {
@@ -230,70 +226,88 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
   };
 
   return (
-    <div className={`${!chatId ? 'fixed inset-x-0 top-1/2 -translate-y-1/2' : 'border-t border-border glass-panel'} transition-all duration-500 ease-out p-4 ${chatId ? 'animate-slide-down' : ''}`}>
-      <div className="max-w-3xl mx-auto space-y-3">
-        {!chatId && <QuickPrompts onPromptSelect={handlePromptSelect} />}
-        
-        <div className="flex items-center gap-2">
+    <div className={`w-full transition-all duration-500 ease-in-out ${
+      !hasSentMessage 
+        ? 'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-full max-w-2xl px-4' 
+        : 'p-4 border-t border-border bg-background'
+    }`}>
+      <div className={`flex flex-col gap-3 transition-all duration-500 ${!hasSentMessage ? 'items-center' : 'max-w-4xl mx-auto'}`}>
+        <div className={`flex items-center justify-center gap-2 transition-opacity duration-300 ${!hasSentMessage ? 'opacity-100' : 'opacity-0 hidden'}`}>
           <Select value={model} onValueChange={setModel}>
-            <SelectTrigger className="w-[180px]">
+            <SelectTrigger className="w-48 h-9 bg-background/50 border-border/50">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="google/gemini-2.5-flash-lite">Gemini Flash Lite</SelectItem>
-              <SelectItem value="google/gemini-2.5-flash">Gemini Flash</SelectItem>
-              <SelectItem value="google/gemini-2.5-pro">Gemini Pro</SelectItem>
-              <SelectItem value="openai/gpt-5-mini">GPT-5 Mini</SelectItem>
+              <SelectItem value="google/gemini-2.5-pro">Gemini 2.5 Pro</SelectItem>
+              <SelectItem value="google/gemini-2.5-flash">Gemini 2.5 Flash</SelectItem>
+              <SelectItem value="google/gemini-2.5-flash-lite">Gemini 2.5 Flash Lite</SelectItem>
               <SelectItem value="openai/gpt-5">GPT-5</SelectItem>
+              <SelectItem value="openai/gpt-5-mini">GPT-5 Mini</SelectItem>
+              <SelectItem value="openai/gpt-5-nano">GPT-5 Nano</SelectItem>
             </SelectContent>
           </Select>
         </div>
 
-        <div className="relative">
-          <Textarea
-            ref={textareaRef}
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyDown={handleKeyPress}
-            placeholder="Ask Nova AI anything..."
-            rows={1}
-            className="resize-none smooth-transition py-3 pr-24 rounded-full flex-1 min-h-[48px] max-h-[120px]"
-            disabled={isGenerating}
-          />
+        <div className="w-full">
+          <div className="relative flex items-center gap-2 bg-background border border-border rounded-full pr-2 shadow-lg">
+            <Textarea
+              ref={textareaRef}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Ask Nova AI anything..."
+              className="flex-1 resize-none border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 min-h-[48px] max-h-[48px] py-3 px-4 rounded-full overflow-hidden"
+              rows={1}
+            />
+            
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={isRecording ? stopRecording : startRecording}
+              className={`rounded-full h-10 w-10 flex-shrink-0 ${isRecording ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90' : ''}`}
+            >
+              {isRecording ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+            </Button>
 
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
             {isGenerating ? (
               <Button
                 onClick={handleStopGenerating}
                 size="icon"
-                variant="ghost"
-                className="h-9 w-9 rounded-full smooth-transition hover-scale hover:bg-destructive/10"
+                variant="destructive"
+                className="rounded-full h-10 w-10 flex-shrink-0"
               >
-                <Square className="w-4 h-4 fill-current" />
+                <Square className="w-4 h-4" />
               </Button>
             ) : (
-              <>
-                <Button
-                  onClick={isRecording ? stopRecording : startRecording}
-                  size="icon"
-                  variant="ghost"
-                  className={`h-9 w-9 rounded-full smooth-transition hover-scale ${isRecording ? 'bg-destructive/20 text-destructive' : ''}`}
-                >
-                  {isRecording ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
-                </Button>
-                <Button
-                  onClick={handleSend}
-                  disabled={!message.trim()}
-                  size="icon"
-                  className="h-9 w-9 rounded-full smooth-transition hover-scale disabled:opacity-50"
-                  style={{ background: "var(--gradient-primary)" }}
-                >
-                  <ArrowUp className="w-4 h-4" />
-                </Button>
-              </>
+              <Button
+                onClick={handleSend}
+                disabled={!message.trim()}
+                size="icon"
+                className="rounded-full h-10 w-10 bg-primary hover:bg-primary/90 flex-shrink-0"
+              >
+                <ArrowUp className="w-4 h-4" />
+              </Button>
             )}
           </div>
         </div>
+
+        {hasSentMessage && (
+          <div className="flex items-center justify-center gap-2 mt-2">
+            <Select value={model} onValueChange={setModel}>
+              <SelectTrigger className="w-48 h-9 bg-background/50 border-border/50">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="google/gemini-2.5-pro">Gemini 2.5 Pro</SelectItem>
+                <SelectItem value="google/gemini-2.5-flash">Gemini 2.5 Flash</SelectItem>
+                <SelectItem value="google/gemini-2.5-flash-lite">Gemini 2.5 Flash Lite</SelectItem>
+                <SelectItem value="openai/gpt-5">GPT-5</SelectItem>
+                <SelectItem value="openai/gpt-5-mini">GPT-5 Mini</SelectItem>
+                <SelectItem value="openai/gpt-5-nano">GPT-5 Nano</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        )}
       </div>
     </div>
   );
