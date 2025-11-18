@@ -87,6 +87,7 @@ const Chat = () => {
             onChatCreated={setCurrentChatId}
             userId={session.user.id}
             onGeneratingChange={setIsGenerating}
+            sidebarOpen={sidebarOpen}
           />
         </div>
       </div>
