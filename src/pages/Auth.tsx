@@ -14,28 +14,69 @@ const Auth = () => {
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showVerification, setShowVerification] = useState(false);
+  const [verificationCode, setVerificationCode] = useState("");
   const navigate = useNavigate();
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-
-    try {
-      if (isLogin) {
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
+    
+    if (!isLogin && !showVerification) {
+      // Step 1: Send verification code
+      setLoading(true);
+      try {
+        const { data, error } = await supabase.functions.invoke('send-verification-code', {
+          body: { email }
         });
+
         if (error) throw error;
-        toast.success("Welcome back!");
-        navigate("/chat");
-      } else {
+
+        setShowVerification(true);
+        toast.success(`Verification code sent to ${email}`);
+        // In development, show the code (remove in production!)
+        if (data.code) {
+          toast.info(`Your verification code is: ${data.code}`);
+        }
+      } catch (error: any) {
+        toast.error(error.message);
+      } finally {
+        setLoading(false);
+      }
+      return;
+    }
+
+    if (!isLogin && showVerification) {
+      // Step 2: Verify code and create account
+      setLoading(true);
+      try {
+        // Verify the code
+        const { data: codes, error: verifyError } = await supabase
+          .from('verification_codes')
+          .select('*')
+          .eq('email', email)
+          .eq('code', verificationCode)
+          .eq('verified', false)
+          .gte('expires_at', new Date().toISOString())
+          .order('created_at', { ascending: false })
+          .limit(1);
+
+        if (verifyError || !codes || codes.length === 0) {
+          throw new Error('Invalid or expired verification code');
+        }
+
+        // Mark code as verified
+        await supabase
+          .from('verification_codes')
+          .update({ verified: true })
+          .eq('id', codes[0].id);
+
+        // Create account
         if (!username.trim()) {
           toast.error("Username is required");
           setLoading(false);
           return;
         }
-        
+
         const { data, error } = await supabase.auth.signUp({
           email,
           password,
@@ -46,23 +87,41 @@ const Auth = () => {
             },
           },
         });
+
         if (error) throw error;
-        
-        // Create welcome chat for new user
+
+        // Create welcome chat
         if (data.user) {
           const { error: chatError } = await supabase
             .from("chats")
-            .insert([{ 
-              user_id: data.user.id, 
-              title: "Welcome Chat 👋" 
+            .insert([{
+              user_id: data.user.id,
+              title: "Welcome Chat 👋"
             }]);
-          
+
           if (chatError) console.error("Failed to create welcome chat:", chatError);
         }
-        
+
         toast.success("Account created! Welcome to Nova AI");
         navigate("/chat");
+      } catch (error: any) {
+        toast.error(error.message);
+      } finally {
+        setLoading(false);
       }
+      return;
+    }
+
+    // Login flow
+    setLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) throw error;
+      toast.success("Welcome back!");
+      navigate("/chat");
     } catch (error: any) {
       toast.error(error.message);
     } finally {
@@ -104,7 +163,7 @@ const Auth = () => {
         </div>
 
         <form onSubmit={handleEmailAuth} className="space-y-4">
-          {!isLogin && (
+          {!isLogin && !showVerification && (
             <div className="space-y-2 animate-fade-in">
               <Label htmlFor="username" className="flex items-center gap-2">
                 <User className="w-4 h-4" />
@@ -113,11 +172,10 @@ const Auth = () => {
               <Input
                 id="username"
                 type="text"
-                placeholder="johndoe"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
+                placeholder="Choose a username"
                 required={!isLogin}
-                className="smooth-transition"
               />
             </div>
           )}
@@ -130,70 +188,97 @@ const Auth = () => {
             <Input
               id="email"
               type="email"
-              placeholder="you@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="your@email.com"
               required
-              className="smooth-transition"
+              disabled={showVerification}
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="password" className="flex items-center gap-2">
-              <Lock className="w-4 h-4" />
-              Password
-            </Label>
-            <div className="relative">
-              <Input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-                className="smooth-transition pr-10"
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? (
-                  <EyeOff className="h-4 w-4 text-muted-foreground" />
-                ) : (
-                  <Eye className="h-4 w-4 text-muted-foreground" />
-                )}
-              </Button>
+          {!showVerification && (
+            <div className="space-y-2">
+              <Label htmlFor="password" className="flex items-center gap-2">
+                <Lock className="w-4 h-4" />
+                Password
+              </Label>
+              <div className="relative">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className="absolute right-2 top-1/2 -translate-y-1/2"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-4 h-4" />
+                  ) : (
+                    <Eye className="w-4 h-4" />
+                  )}
+                </Button>
+              </div>
             </div>
-          </div>
+          )}
+
+          {!isLogin && showVerification && (
+            <div className="space-y-2 animate-fade-in">
+              <Label htmlFor="code" className="flex items-center gap-2">
+                <Lock className="w-4 h-4" />
+                Verification Code
+              </Label>
+              <Input
+                id="code"
+                type="text"
+                value={verificationCode}
+                onChange={(e) => setVerificationCode(e.target.value)}
+                placeholder="Enter 6-digit code"
+                required
+                maxLength={6}
+              />
+              <p className="text-xs text-muted-foreground">
+                Check your email for the verification code
+              </p>
+            </div>
+          )}
 
           <Button
             type="submit"
             className="w-full smooth-transition hover-scale"
-            disabled={loading}
             style={{ background: "var(--gradient-primary)" }}
+            disabled={loading}
           >
             {loading ? (
               <Loader2 className="w-4 h-4 animate-spin" />
+            ) : showVerification ? (
+              "Verify & Create Account"
             ) : isLogin ? (
               "Sign In"
             ) : (
-              "Sign Up"
+              "Send Verification Code"
             )}
           </Button>
         </form>
 
         <p className="text-center text-sm text-muted-foreground mt-6">
-          {isLogin ? "Don't have an account? " : "Already have an account? "}
+          {isLogin ? "Don't have an account? " : showVerification ? "Wrong email? " : "Already have an account? "}
           <button
             type="button"
-            onClick={() => setIsLogin(!isLogin)}
+            onClick={() => {
+              setIsLogin(!isLogin);
+              setShowVerification(false);
+              setVerificationCode("");
+            }}
             className="text-primary hover:underline font-medium"
           >
-            {isLogin ? "Sign up" : "Sign in"}
+            {isLogin ? "Sign up" : showVerification ? "Go back" : "Sign in"}
           </button>
         </p>
       </div>

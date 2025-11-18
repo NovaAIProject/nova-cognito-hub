@@ -3,6 +3,12 @@ project_id = "hqkrazxkougzedamthfq"
 [functions.chat]
 verify_jwt = false
 
+[functions.transcribe-audio]
+verify_jwt = false
+
+[functions.send-verification-code]
+verify_jwt = false
+
 [functions.admin-get-users]
 verify_jwt = true
 
