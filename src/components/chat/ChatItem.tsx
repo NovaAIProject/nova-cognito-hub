@@ -78,9 +78,9 @@ const ChatItem = ({
           <Button
             variant="ghost"
             size="sm"
-            className="opacity-0 group-hover:opacity-100 h-6 w-6 p-0"
+            className="opacity-50 group-hover:opacity-100 hover:opacity-100 h-7 w-7 p-0 flex-shrink-0 hover:bg-foreground/10 ml-1"
           >
-            <MoreVertical className="w-3 h-3" />
+            <MoreVertical className="w-4 h-4" />
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
