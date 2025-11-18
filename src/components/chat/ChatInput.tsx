@@ -19,9 +19,10 @@ interface ChatInputProps {
   onChatCreated: (id: string) => void;
   userId: string;
   onGeneratingChange?: (isGenerating: boolean) => void;
+  sidebarOpen?: boolean;
 }
 
-const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatInputProps) => {
+const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarOpen }: ChatInputProps) => {
   const [message, setMessage] = useState("");
   const [model, setModel] = useState("google/gemini-2.5-flash-lite");
   const [isGenerating, setIsGenerating] = useState(false);
@@ -239,11 +240,21 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
   };
 
   return (
-    <div className={`w-full ${
-      !hasSentMessage 
-        ? 'fixed top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 max-w-2xl px-4' 
-        : 'p-4 border-t border-border bg-background'
-    }`}>
+    <div 
+      className={`w-full transition-all duration-300 ${
+        !hasSentMessage 
+          ? 'fixed top-[45%] z-10 max-w-2xl px-4' 
+          : 'p-4 border-t border-border bg-background'
+      }`}
+      style={
+        !hasSentMessage
+          ? {
+              left: sidebarOpen ? 'calc(50% + 128px)' : '50%',
+              transform: 'translate(-50%, -50%)',
+            }
+          : undefined
+      }
+    >
       <div className={`flex flex-col gap-6 ${!hasSentMessage ? 'items-center' : 'max-w-4xl mx-auto'}`}>
         {!hasSentMessage && (
           <h2 className="text-3xl font-semibold text-foreground text-center mb-2">

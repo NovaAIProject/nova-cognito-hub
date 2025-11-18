@@ -61,56 +61,58 @@ const SupportDialog = ({ open, onOpenChange }: SupportDialogProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[480px]">
         <DialogHeader>
-          <DialogTitle>Contact Support</DialogTitle>
-          <DialogDescription>
-            Send us a message and we'll get back to you as soon as possible.
+          <DialogTitle className="text-xl font-semibold">Contact Support</DialogTitle>
+          <DialogDescription className="text-sm text-muted-foreground">
+            We're here to help. Send us a message and we'll respond shortly.
           </DialogDescription>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+        <form onSubmit={handleSubmit} className="space-y-5 mt-4">
           <div className="space-y-2">
-            <Label htmlFor="subject">Subject</Label>
+            <Label htmlFor="subject" className="text-sm font-medium">Subject</Label>
             <Input
               id="subject"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
-              placeholder="Brief description of your issue"
+              placeholder="What can we help you with?"
+              className="h-10"
               required
             />
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="message">Message</Label>
+            <Label htmlFor="message" className="text-sm font-medium">Message</Label>
             <Textarea
               id="message"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Describe your issue in detail..."
-              className="min-h-[120px]"
+              placeholder="Tell us more about your question or issue..."
+              className="min-h-[140px] resize-none"
               required
             />
           </div>
           
-          <div className="flex gap-3 justify-end">
+          <div className="flex gap-3 justify-end pt-2">
             <Button
               type="button"
-              variant="outline"
+              variant="ghost"
               onClick={() => onOpenChange(false)}
               disabled={loading}
+              className="hover:bg-foreground/10"
             >
               Cancel
             </Button>
             <Button
               type="submit"
               disabled={loading}
-              className="bg-primary hover:bg-primary/90"
+              className="bg-primary hover:bg-primary/90 min-w-[120px]"
             >
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Sending...
+                  Sending
                 </>
               ) : (
                 "Send Message"
