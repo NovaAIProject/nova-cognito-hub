@@ -22,8 +22,9 @@ interface ChatInputProps {
 
 const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatInputProps) => {
   const [message, setMessage] = useState("");
-  const [model, setModel] = useState("google/gemini-2.5-flash");
+  const [model, setModel] = useState("google/gemini-2.5-flash-lite");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handlePromptSelect = (prompt: string) => {
@@ -67,8 +68,8 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
 
       if (userMsgError) throw userMsgError;
 
-      // Delay to ensure user message renders before showing thinking
-      await new Promise(resolve => setTimeout(resolve, 400));
+      // Small delay to ensure user message renders before showing thinking
+      await new Promise(resolve => setTimeout(resolve, 200));
       
       setIsGenerating(true);
       onGeneratingChange?.(true);
@@ -164,7 +165,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
   };
 
   return (
-    <div className="border-t border-border glass-panel p-4">
+    <div className={`${!chatId ? 'fixed inset-x-0 top-1/2 -translate-y-1/2' : 'border-t border-border glass-panel'} transition-all duration-500 ease-out p-4 ${chatId ? 'animate-slide-down' : ''}`}>
       <div className="max-w-3xl mx-auto space-y-3">
         {!chatId && <QuickPrompts onPromptSelect={handlePromptSelect} />}
         
@@ -183,37 +184,42 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
           </Select>
         </div>
 
-        <div className="flex gap-2 items-end">
+        <div className="relative">
           <Textarea
             ref={textareaRef}
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleKeyPress}
             placeholder="Ask Nova AI anything..."
-            className="min-h-[44px] max-h-[120px] resize-none smooth-transition py-3 flex-1"
+            rows={1}
+            className="resize-none smooth-transition py-3 pr-24 rounded-full flex-1 min-h-[48px] max-h-[120px]"
             disabled={isGenerating}
           />
 
-          {isGenerating ? (
-            <Button
-              onClick={handleStopGenerating}
-              size="icon"
-              variant="outline"
-              className="h-[44px] w-[44px] rounded-lg border-2 smooth-transition hover-scale hover:bg-destructive/10 hover:border-destructive"
-            >
-              <Square className="w-4 h-4 fill-current" />
-            </Button>
-          ) : (
-            <Button
-              onClick={handleSend}
-              disabled={!message.trim()}
-              size="icon"
-              className="h-[44px] w-[44px] rounded-full smooth-transition hover-scale disabled:opacity-50"
-              style={{ background: "var(--gradient-primary)" }}
-            >
-              <ArrowUp className="w-5 h-5" />
-            </Button>
-          )}
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex gap-1">
+            {isGenerating ? (
+              <Button
+                onClick={handleStopGenerating}
+                size="icon"
+                variant="ghost"
+                className="h-9 w-9 rounded-full smooth-transition hover-scale hover:bg-destructive/10"
+              >
+                <Square className="w-4 h-4 fill-current" />
+              </Button>
+            ) : (
+              <>
+                <Button
+                  onClick={handleSend}
+                  disabled={!message.trim()}
+                  size="icon"
+                  className="h-9 w-9 rounded-full smooth-transition hover-scale disabled:opacity-50"
+                  style={{ background: "var(--gradient-primary)" }}
+                >
+                  <ArrowUp className="w-4 h-4" />
+                </Button>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>

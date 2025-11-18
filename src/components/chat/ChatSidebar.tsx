@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Input } from "@/components/ui/input";
-import { Plus, MessageSquare, Settings, Moon, Sun, LogOut, HelpCircle, Search, Sparkles } from "lucide-react";
+import { Plus, MessageSquare, Settings, Moon, Sun, LogOut, HelpCircle, Search, Sparkles, User } from "lucide-react";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import ChatItem from "./ChatItem";
@@ -25,7 +25,9 @@ interface ChatSidebarProps {
 const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: ChatSidebarProps) => {
   const [chats, setChats] = useState<Chat[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [darkMode, setDarkMode] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [userEmail, setUserEmail] = useState<string>("");
   const navigate = useNavigate();
 
   const filteredChats = chats.filter(chat => 
@@ -38,7 +40,15 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
 
   useEffect(() => {
     fetchChats();
+    fetchUserProfile();
   }, [userId]);
+
+  const fetchUserProfile = async () => {
+    const { data } = await supabase.auth.getUser();
+    if (data.user) {
+      setUserEmail(data.user.email || "");
+    }
+  };
 
   const fetchChats = async () => {
     const { data, error } = await supabase
@@ -164,11 +174,11 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
       
       {/* Sidebar */}
       <aside className={`
-        ${isOpen ? 'w-64' : 'w-0 md:w-0'}
+        ${isOpen ? 'w-64 translate-x-0' : 'w-0 -translate-x-full md:w-0'}
         border-r border-border glass-panel flex flex-col
         transition-all duration-300 ease-in-out
         overflow-hidden
-        ${isOpen ? '' : 'md:hidden'}
+        fixed md:relative z-50 h-full
       `}>
         <div className="flex flex-col h-full w-64">{/* Fixed width content */}
           {/* Header with Logo and Title */}
@@ -188,8 +198,8 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
             
             <Button
               onClick={handleNewChat}
-              className="w-full justify-start gap-2 hover-scale smooth-transition mb-3"
-              style={{ background: "var(--gradient-primary)" }}
+              variant="ghost"
+              className="w-full justify-start gap-2 hover-scale smooth-transition mb-3 bg-transparent hover:bg-accent/50"
             >
               <Plus className="w-4 h-4" />
               New Chat
@@ -244,14 +254,46 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
               {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
               {darkMode ? "Light Mode" : "Dark Mode"}
             </Button>
-            <Button
-              variant="ghost"
-              className="w-full justify-start gap-2 text-destructive hover:text-destructive smooth-transition hover-scale"
-              onClick={handleLogout}
-            >
-              <LogOut className="w-4 h-4" />
-              Logout
-            </Button>
+            
+            {/* Profile Menu */}
+            <div className="relative">
+              <Button
+                variant="ghost"
+                className="w-full justify-start gap-2 smooth-transition hover-scale"
+                onClick={() => setShowProfileMenu(!showProfileMenu)}
+              >
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-xs">
+                  {userEmail.charAt(0).toUpperCase()}
+                </div>
+                <span className="flex-1 text-left truncate text-sm">{userEmail}</span>
+                <svg className={`w-4 h-4 transition-transform ${showProfileMenu ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </Button>
+              
+              {showProfileMenu && (
+                <div className="absolute bottom-full left-0 right-0 mb-2 glass-panel rounded-lg shadow-lg p-2 space-y-1 animate-fade-in">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-start text-xs"
+                    onClick={() => toast.info("Profile settings coming soon!")}
+                  >
+                    <User className="w-3 h-3 mr-2" />
+                    Profile Settings
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full justify-start text-destructive hover:text-destructive text-xs"
+                    onClick={handleLogout}
+                  >
+                    <LogOut className="w-3 h-3 mr-2" />
+                    Logout
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </aside>
