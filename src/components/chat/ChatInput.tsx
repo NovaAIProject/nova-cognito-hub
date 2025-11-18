@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -9,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowUp, Square, Mic, MicOff } from "lucide-react";
+import { ArrowUp, Square, Mic, MicOff, Image } from "lucide-react";
 import { toast } from "sonner";
 
 interface ChatInputProps {
@@ -249,16 +251,18 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
           </h2>
         )}
 
-        <div className={`flex items-center justify-center gap-2 ${!hasSentMessage ? 'opacity-100' : 'opacity-0 hidden'}`}>
-          <label className="flex items-center gap-2 text-sm cursor-pointer hover:text-primary transition-colors">
-            <input
-              type="checkbox"
+        <div className={`flex items-center justify-center gap-4 ${!hasSentMessage ? 'opacity-100' : 'opacity-0 hidden'}`}>
+          <div className="flex items-center gap-2">
+            <Switch
+              id="generate-image"
               checked={generateImage}
-              onChange={(e) => setGenerateImage(e.target.checked)}
-              className="rounded border-border"
+              onCheckedChange={setGenerateImage}
             />
-            Generate Image
-          </label>
+            <Label htmlFor="generate-image" className="text-sm cursor-pointer flex items-center gap-1">
+              <Image className="w-4 h-4" />
+              Generate Image
+            </Label>
+          </div>
           
           <Select value={model} onValueChange={setModel}>
             <SelectTrigger className="w-48 h-9 bg-background/50 border-border/50">
@@ -291,7 +295,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
               variant="ghost"
               size="icon"
               onClick={isRecording ? stopRecording : startRecording}
-              className={`rounded-full h-9 w-9 flex-shrink-0 transition-colors ${isRecording ? 'bg-destructive/20 text-destructive hover:bg-destructive/30' : 'hover:bg-muted'}`}
+              className={`rounded-full h-9 w-9 flex-shrink-0 transition-colors hover:bg-foreground/10 ${isRecording ? 'bg-destructive/20 text-destructive hover:bg-destructive/30' : ''}`}
             >
               {isRecording ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
             </Button>
@@ -301,7 +305,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
                 onClick={handleStopGenerating}
                 size="icon"
                 variant="ghost"
-                className="rounded-full h-9 w-9 flex-shrink-0 hover:bg-muted"
+                className="rounded-full h-9 w-9 flex-shrink-0 hover:bg-foreground/10"
               >
                 <Square className="w-3.5 h-3.5 fill-current" />
               </Button>
@@ -311,7 +315,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
                 disabled={!message.trim()}
                 size="icon"
                 variant="ghost"
-                className="rounded-full h-9 w-9 flex-shrink-0 hover:bg-muted disabled:opacity-40"
+                className="rounded-full h-9 w-9 flex-shrink-0 hover:bg-foreground/10 disabled:opacity-40"
               >
                 <ArrowUp className="w-4 h-4" />
               </Button>
@@ -320,16 +324,18 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
         </div>
 
         {hasSentMessage && (
-          <div className="flex items-center justify-center gap-3">
-            <label className="flex items-center gap-2 text-sm cursor-pointer hover:text-primary transition-colors">
-              <input
-                type="checkbox"
+          <div className="flex items-center justify-center gap-4">
+            <div className="flex items-center gap-2">
+              <Switch
+                id="generate-image-bottom"
                 checked={generateImage}
-                onChange={(e) => setGenerateImage(e.target.checked)}
-                className="rounded border-border"
+                onCheckedChange={setGenerateImage}
               />
-              Generate Image
-            </label>
+              <Label htmlFor="generate-image-bottom" className="text-sm cursor-pointer flex items-center gap-1">
+                <Image className="w-4 h-4" />
+                Generate Image
+              </Label>
+            </div>
             
             <Select value={model} onValueChange={setModel}>
               <SelectTrigger className="w-48 h-9 bg-background/50 border-border/50">

@@ -7,6 +7,7 @@ import { Plus, MessageSquare, Settings, Moon, Sun, LogOut, HelpCircle, Search, S
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import ChatItem from "./ChatItem";
+import SupportDialog from "./SupportDialog";
 
 interface Chat {
   id: string;
@@ -28,6 +29,7 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
   const [darkMode, setDarkMode] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [username, setUsername] = useState<string>("");
+  const [showSupportDialog, setShowSupportDialog] = useState(false);
   const navigate = useNavigate();
 
   const filteredChats = chats.filter(chat => 
@@ -245,16 +247,15 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
           <div className="p-4 border-t border-border space-y-2">
             <Button
               variant="ghost"
-              className="w-full justify-start gap-2 smooth-transition hover-scale"
-              onClick={() => toast.info("Contact support coming soon!")}
+              className="w-full justify-start gap-2 hover:bg-foreground/5"
+              onClick={() => setShowSupportDialog(true)}
             >
               <HelpCircle className="w-4 h-4" />
               Contact Support
-              <span className="ml-auto text-xs text-muted-foreground">Soon</span>
             </Button>
             <Button
               variant="ghost"
-              className="w-full justify-start gap-2 smooth-transition hover-scale"
+              className="w-full justify-start gap-2 hover:bg-foreground/5"
               onClick={() => setDarkMode(!darkMode)}
             >
               {darkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
@@ -265,7 +266,7 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
             <div className="relative">
               <Button
                 variant="ghost"
-                className="w-full justify-start gap-2 smooth-transition hover-scale"
+                className="w-full justify-start gap-2 hover:bg-foreground/5"
                 onClick={() => setShowProfileMenu(!showProfileMenu)}
               >
                 <div className="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-xs font-semibold">
@@ -303,6 +304,11 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
           </div>
         </div>
       </aside>
+      
+      <SupportDialog 
+        open={showSupportDialog} 
+        onOpenChange={setShowSupportDialog}
+      />
     </>
   );
 };

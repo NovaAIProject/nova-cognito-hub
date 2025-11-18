@@ -16,7 +16,7 @@ const ChatHeader = ({ onToggleSidebar, onNewChat, sidebarOpen }: ChatHeaderProps
             variant="ghost"
             size="icon"
             onClick={onToggleSidebar}
-            className="hover-scale smooth-transition"
+            className="hover:bg-foreground/10"
           >
             {sidebarOpen ? <PanelLeftClose className="w-5 h-5" /> : <PanelLeft className="w-5 h-5" />}
           </Button>
@@ -36,7 +36,7 @@ const ChatHeader = ({ onToggleSidebar, onNewChat, sidebarOpen }: ChatHeaderProps
           onClick={onNewChat}
           variant="ghost"
           size="icon"
-          className="shrink-0 hover-scale smooth-transition border border-border"
+          className="shrink-0 hover:bg-foreground/10 border border-border"
         >
           <Plus className="w-5 h-5" />
         </Button>
