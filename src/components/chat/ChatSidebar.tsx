@@ -252,7 +252,7 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
               <div className="px-4 pt-4 pb-2">
                 <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Pinned</span>
               </div>
-              <div className="px-2">
+              <div className="px-2 pr-3">
                 {pinnedChats.map((chat) => (
                   <ChatItem
                     key={chat.id}
@@ -276,7 +276,7 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
             </span>
           </div>
 
-          <ScrollArea className="flex-1 px-2">
+          <ScrollArea className="flex-1 px-2 pr-3">
             {unpinnedChats.map((chat) => (
               <ChatItem
                 key={chat.id}
