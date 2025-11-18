@@ -28,6 +28,17 @@ const models = [
     bestFor: "Daily conversations, coding help, general questions"
   },
   {
+    name: "Gemini 2.5 Flash Lite",
+    description: "Ultra-fast lightweight model for simple tasks",
+    features: [
+      "Fastest response times",
+      "Most cost-effective option",
+      "Great for simple queries",
+      "Efficient for high-volume use"
+    ],
+    bestFor: "Quick answers, simple questions, classification tasks"
+  },
+  {
     name: "Gemini 2.5 Pro",
     description: "Most powerful model with advanced reasoning",
     features: [
@@ -59,6 +70,17 @@ const models = [
       "More affordable"
     ],
     bestFor: "Quick responses, general tasks, everyday use"
+  },
+  {
+    name: "GPT-5 Nano",
+    description: "Optimized for speed and efficiency",
+    features: [
+      "Ultra-fast responses",
+      "Best cost efficiency",
+      "Good for simple tasks",
+      "High-volume friendly"
+    ],
+    bestFor: "Simple queries, quick tasks, high-frequency use"
   }
 ];
 
