@@ -12,7 +12,7 @@ const Chat = () => {
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentChatId, setCurrentChatId] = useState<string | null>(null);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const navigate = useNavigate();
 
