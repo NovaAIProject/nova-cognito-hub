@@ -15,6 +15,7 @@ interface Chat {
   id: string;
   title: string;
   updated_at: string;
+  pinned?: boolean;
 }
 
 interface ChatSidebarProps {
@@ -37,6 +38,9 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
   const filteredChats = chats.filter(chat => 
     chat.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
+  
+  const pinnedChats = filteredChats.filter(chat => chat.pinned);
+  const unpinnedChats = filteredChats.filter(chat => !chat.pinned);
 
   useEffect(() => {
     document.documentElement.classList.toggle("dark", darkMode);
@@ -163,6 +167,24 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
     toast.success("Chat duplicated");
   };
 
+  const handleTogglePin = async (id: string) => {
+    const chat = chats.find((c) => c.id === id);
+    if (!chat) return;
+
+    const { error } = await supabase
+      .from("chats")
+      .update({ pinned: !chat.pinned })
+      .eq("id", id);
+
+    if (error) {
+      toast.error("Failed to update pin status");
+      return;
+    }
+
+    setChats(chats.map((c) => (c.id === id ? { ...c, pinned: !c.pinned } : c)));
+    toast.success(chat.pinned ? "Chat unpinned" : "Chat pinned");
+  };
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate("/auth");
@@ -224,13 +246,38 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
             </div>
           </div>
 
+          {/* Pinned Chats */}
+          {pinnedChats.length > 0 && (
+            <>
+              <div className="px-4 pt-4 pb-2">
+                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Pinned</span>
+              </div>
+              <div className="px-2">
+                {pinnedChats.map((chat) => (
+                  <ChatItem
+                    key={chat.id}
+                    chat={chat}
+                    isActive={currentChatId === chat.id}
+                    onSelect={() => handleSelectChat(chat.id)}
+                    onDelete={() => handleDeleteChat(chat.id)}
+                    onRename={(newTitle) => handleRenameChat(chat.id, newTitle)}
+                    onDuplicate={() => handleDuplicateChat(chat.id)}
+                    onTogglePin={() => handleTogglePin(chat.id)}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+
           {/* Chats Label */}
           <div className="px-4 pt-4 pb-2">
-            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Chats</span>
+            <span className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
+              {pinnedChats.length > 0 ? "All Chats" : "Chats"}
+            </span>
           </div>
 
           <ScrollArea className="flex-1 px-2">
-            {filteredChats.map((chat) => (
+            {unpinnedChats.map((chat) => (
               <ChatItem
                 key={chat.id}
                 chat={chat}
@@ -239,6 +286,7 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
                 onDelete={() => handleDeleteChat(chat.id)}
                 onRename={(newTitle) => handleRenameChat(chat.id, newTitle)}
                 onDuplicate={() => handleDuplicateChat(chat.id)}
+                onTogglePin={() => handleTogglePin(chat.id)}
               />
             ))}
           </ScrollArea>

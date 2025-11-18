@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowUp, Square, Mic, MicOff } from "lucide-react";
+import { ArrowUp, Square, Mic, MicOff, Paperclip, X } from "lucide-react";
 import { toast } from "sonner";
 
 interface ChatInputProps {
@@ -29,7 +29,9 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
   const [isRecording, setIsRecording] = useState(false);
   const [hasSentMessage, setHasSentMessage] = useState(!!chatId);
   const [generateImage, setGenerateImage] = useState(false);
+  const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
@@ -65,6 +67,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
     const userMessage = message;
     const startTime = Date.now();
     setMessage("");
+    setUploadedFile(null);
 
     try {
       const { error: userMsgError } = await supabase.from("messages").insert([
@@ -291,6 +294,20 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
         </div>
 
         <div className="w-full">
+          {uploadedFile && (
+            <div className="mb-2 flex items-center gap-2 bg-muted/50 rounded-lg p-2 border border-border">
+              <Paperclip className="w-4 h-4 text-primary" />
+              <span className="text-sm flex-1 truncate">{uploadedFile.name}</span>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setUploadedFile(null)}
+                className="h-6 w-6 p-0 hover:bg-foreground/10"
+              >
+                <X className="w-3 h-3" />
+              </Button>
+            </div>
+          )}
           <div className="relative flex items-center gap-1.5 bg-background border border-border/50 rounded-full pr-1.5 shadow-sm hover:border-border transition-colors">
             <Textarea
               ref={textareaRef}
@@ -301,6 +318,33 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
               className="flex-1 resize-none border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 min-h-[48px] max-h-[48px] py-3 px-4 rounded-full overflow-hidden"
               rows={1}
             />
+            
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".pdf,.doc,.docx,.txt,.md"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  if (file.size > 20 * 1024 * 1024) {
+                    toast.error("File size must be less than 20MB");
+                    return;
+                  }
+                  setUploadedFile(file);
+                  toast.success("File attached");
+                }
+              }}
+              className="hidden"
+            />
+            
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => fileInputRef.current?.click()}
+              className="rounded-full h-9 w-9 flex-shrink-0 transition-colors hover:bg-foreground/10"
+            >
+              <Paperclip className="w-4 h-4" />
+            </Button>
             
             <Button
               variant="ghost"
