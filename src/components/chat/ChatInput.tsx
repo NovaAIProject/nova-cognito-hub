@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowUp, Square, Mic, MicOff, Image } from "lucide-react";
+import { ArrowUp, Square, Mic, MicOff } from "lucide-react";
 import { toast } from "sonner";
 
 interface ChatInputProps {
@@ -257,9 +257,9 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
               id="generate-image"
               checked={generateImage}
               onCheckedChange={setGenerateImage}
+              className="scale-90"
             />
-            <Label htmlFor="generate-image" className="text-sm cursor-pointer flex items-center gap-1">
-              <Image className="w-4 h-4" />
+            <Label htmlFor="generate-image" className="text-sm cursor-pointer">
               Generate Image
             </Label>
           </div>
@@ -330,9 +330,9 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
                 id="generate-image-bottom"
                 checked={generateImage}
                 onCheckedChange={setGenerateImage}
+                className="scale-90"
               />
-              <Label htmlFor="generate-image-bottom" className="text-sm cursor-pointer flex items-center gap-1">
-                <Image className="w-4 h-4" />
+              <Label htmlFor="generate-image-bottom" className="text-sm cursor-pointer">
                 Generate Image
               </Label>
             </div>

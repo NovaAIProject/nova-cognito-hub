@@ -8,6 +8,8 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import ChatItem from "./ChatItem";
 import SupportDialog from "./SupportDialog";
+import ChangelogDialog from "./ChangelogDialog";
+import ModelComparisonDialog from "./ModelComparisonDialog";
 
 interface Chat {
   id: string;
@@ -190,19 +192,16 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
         fixed md:relative z-50 h-full
       `}>
         <div className="flex flex-col h-full w-64">{/* Fixed width content */}
-          {/* Header with Logo and Title */}
+          {/* Header with Logo */}
           <div className="p-4 border-b border-border">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="relative w-9 h-9 rounded-xl overflow-hidden shadow-lg">
+            <div className="flex items-center justify-center mb-4">
+              <div className="relative w-10 h-10 rounded-xl overflow-hidden shadow-lg">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary to-accent animate-pulse" style={{ animationDuration: '3s' }} />
                 <div className="absolute inset-[2px] bg-background rounded-[10px]" />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <Sparkles className="w-5 h-5 text-primary" />
                 </div>
               </div>
-              <span className="text-xl font-semibold">
-                Nova AI
-              </span>
             </div>
             
             <Button
@@ -245,9 +244,11 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
           </ScrollArea>
 
           <div className="p-4 border-t border-border space-y-2">
+            <ChangelogDialog />
+            <ModelComparisonDialog />
             <Button
               variant="ghost"
-              className="w-full justify-start gap-2 hover:bg-foreground/5"
+              className="w-full justify-start gap-2 hover:bg-foreground/10"
               onClick={() => setShowSupportDialog(true)}
             >
               <HelpCircle className="w-4 h-4" />
