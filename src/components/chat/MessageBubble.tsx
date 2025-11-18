@@ -70,7 +70,7 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
 
   return (
     <div
-      className={`flex gap-3 message-appear ${
+      className={`flex gap-3 animate-in slide-in-from-bottom-2 duration-300 ${
         isUser ? "flex-row-reverse" : "flex-row"
       }`}
     >
