@@ -233,19 +233,19 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
   };
 
   return (
-    <div className={`w-full transition-all duration-500 ease-in-out ${
+    <div className={`w-full ${
       !hasSentMessage 
-        ? 'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-full max-w-2xl px-4' 
+        ? 'fixed top-[45%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 max-w-2xl px-4' 
         : 'p-4 border-t border-border bg-background'
     }`}>
-      <div className={`flex flex-col gap-6 transition-all duration-500 ${!hasSentMessage ? 'items-center' : 'max-w-4xl mx-auto'}`}>
+      <div className={`flex flex-col gap-6 ${!hasSentMessage ? 'items-center' : 'max-w-4xl mx-auto'}`}>
         {!hasSentMessage && (
-          <h2 className="text-4xl font-bold gradient-text font-poppins animate-fade-in text-center">
-            How can I help you today?
+          <h2 className="text-3xl font-semibold text-foreground text-center mb-2">
+            How can I help you?
           </h2>
         )}
 
-        <div className={`flex items-center justify-center gap-2 transition-opacity duration-300 ${!hasSentMessage ? 'opacity-100' : 'opacity-0 hidden'}`}>
+        <div className={`flex items-center justify-center gap-2 ${!hasSentMessage ? 'opacity-100' : 'opacity-0 hidden'}`}>
           <Select value={model} onValueChange={setModel}>
             <SelectTrigger className="w-48 h-9 bg-background/50 border-border/50">
               <SelectValue />
@@ -262,7 +262,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
         </div>
 
         <div className="w-full">
-          <div className="relative flex items-center gap-2 bg-background border border-border/50 rounded-full pr-2 shadow-md hover:shadow-lg transition-shadow">
+          <div className="relative flex items-center gap-1.5 bg-background border border-border/50 rounded-full pr-1.5 shadow-sm hover:border-border transition-colors">
             <Textarea
               ref={textareaRef}
               value={message}
@@ -277,7 +277,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
               variant="ghost"
               size="icon"
               onClick={isRecording ? stopRecording : startRecording}
-              className={`rounded-full h-9 w-9 flex-shrink-0 transition-all ${isRecording ? 'bg-destructive/20 text-destructive hover:bg-destructive/30' : 'hover:bg-muted'}`}
+              className={`rounded-full h-9 w-9 flex-shrink-0 transition-colors ${isRecording ? 'bg-destructive/20 text-destructive hover:bg-destructive/30' : 'hover:bg-muted'}`}
             >
               {isRecording ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
             </Button>
@@ -286,7 +286,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
               <Button
                 onClick={handleStopGenerating}
                 size="icon"
-                className="rounded-full h-9 w-9 flex-shrink-0 bg-destructive/90 hover:bg-destructive text-white"
+                className="rounded-full h-9 w-9 flex-shrink-0 bg-destructive hover:bg-destructive/90 text-white"
               >
                 <Square className="w-3.5 h-3.5 fill-current" />
               </Button>
@@ -295,10 +295,9 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
                 onClick={handleSend}
                 disabled={!message.trim()}
                 size="icon"
-                className="rounded-full h-9 w-9 flex-shrink-0 disabled:opacity-40 transition-all"
-                style={{ background: !message.trim() ? undefined : "var(--gradient-primary)" }}
+                className="rounded-full h-9 w-9 flex-shrink-0 bg-foreground hover:bg-foreground/90 disabled:bg-muted disabled:opacity-50 transition-colors"
               >
-                <ArrowUp className="w-4 h-4 text-white" />
+                <ArrowUp className="w-4 h-4 text-background" />
               </Button>
             )}
           </div>
