@@ -27,7 +27,7 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
   const [searchQuery, setSearchQuery] = useState("");
   const [darkMode, setDarkMode] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
-  const [userEmail, setUserEmail] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
   const navigate = useNavigate();
 
   const filteredChats = chats.filter(chat => 
@@ -46,7 +46,14 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
   const fetchUserProfile = async () => {
     const { data } = await supabase.auth.getUser();
     if (data.user) {
-      setUserEmail(data.user.email || "");
+      // Fetch username from profiles table
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('username')
+        .eq('user_id', data.user.id)
+        .single();
+      
+      setUsername(profileData?.username || data.user.email?.split('@')[0] || "User");
     }
   };
 
@@ -198,10 +205,10 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
             
             <Button
               onClick={handleNewChat}
-              className="w-full justify-start gap-2 bg-transparent border border-border/50 hover:bg-muted/50 hover:border-border mb-3"
+              className="w-full justify-start gap-2 bg-transparent border border-border/50 hover:bg-muted/50 hover:border-border mb-3 text-foreground"
             >
               <Plus className="w-4 h-4" />
-              New Chat
+              <span className="text-foreground">New Chat</span>
             </Button>
 
             <div className="relative mt-3">
@@ -261,10 +268,10 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
                 className="w-full justify-start gap-2 smooth-transition hover-scale"
                 onClick={() => setShowProfileMenu(!showProfileMenu)}
               >
-                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-xs">
-                  {userEmail.charAt(0).toUpperCase()}
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-white text-xs font-semibold">
+                  {username.charAt(0).toUpperCase()}
                 </div>
-                <span className="flex-1 text-left truncate text-sm">{userEmail}</span>
+                <span className="flex-1 text-left truncate text-sm font-medium">{username}</span>
                 <svg className={`w-4 h-4 transition-transform ${showProfileMenu ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                 </svg>
