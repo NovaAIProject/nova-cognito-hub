@@ -24,7 +24,7 @@ interface ChatInputProps {
 
 const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarOpen }: ChatInputProps) => {
   const [message, setMessage] = useState("");
-  const [model, setModel] = useState("google/gemini-2.5-flash-lite");
+  const [model, setModel] = useState("google/gemini-2.5-flash");
   const [isGenerating, setIsGenerating] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [hasSentMessage, setHasSentMessage] = useState(!!chatId);
