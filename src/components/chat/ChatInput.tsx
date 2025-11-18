@@ -25,6 +25,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
   const [isGenerating, setIsGenerating] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
   const [hasSentMessage, setHasSentMessage] = useState(!!chatId);
+  const [generateImage, setGenerateImage] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
@@ -87,12 +88,12 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
             "Content-Type": "application/json",
             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
           },
-          body: JSON.stringify({
-            message: userMessage,
-            model: model,
-            generateImage: false,
-            chatId: currentChatId,
-          }),
+            body: JSON.stringify({
+              message: userMessage,
+              model: model,
+              generateImage: generateImage,
+              chatId: currentChatId,
+            }),
         }
       );
 
@@ -104,10 +105,14 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
       const endTime = Date.now();
       const responseTime = Math.round((endTime - startTime) / 1000);
 
+      // Stop thinking indicator immediately
+      setIsGenerating(false);
+      onGeneratingChange?.(false);
+
       let finalContent = data.response;
       if (data.images && data.images.length > 0) {
         const imageUrl = data.images[0].image_url.url;
-        finalContent = `${data.response}\n\n![](${imageUrl})`;
+        finalContent = `${data.response}\n\n![Generated Image](${imageUrl})`;
       }
 
       await supabase.from("messages").insert([
@@ -150,7 +155,6 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
       }
     } catch (error: any) {
       toast.error(error.message || "Failed to send message");
-    } finally {
       setIsGenerating(false);
       onGeneratingChange?.(false);
     }
@@ -246,6 +250,16 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
         )}
 
         <div className={`flex items-center justify-center gap-2 ${!hasSentMessage ? 'opacity-100' : 'opacity-0 hidden'}`}>
+          <label className="flex items-center gap-2 text-sm cursor-pointer hover:text-primary transition-colors">
+            <input
+              type="checkbox"
+              checked={generateImage}
+              onChange={(e) => setGenerateImage(e.target.checked)}
+              className="rounded border-border"
+            />
+            Generate Image
+          </label>
+          
           <Select value={model} onValueChange={setModel}>
             <SelectTrigger className="w-48 h-9 bg-background/50 border-border/50">
               <SelectValue />
@@ -287,7 +301,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
                 onClick={handleStopGenerating}
                 size="icon"
                 variant="ghost"
-                className="rounded-full h-9 w-9 flex-shrink-0 hover:bg-destructive/10 text-destructive"
+                className="rounded-full h-9 w-9 flex-shrink-0 hover:bg-muted"
               >
                 <Square className="w-3.5 h-3.5 fill-current" />
               </Button>
@@ -306,7 +320,17 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
         </div>
 
         {hasSentMessage && (
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex items-center justify-center gap-3">
+            <label className="flex items-center gap-2 text-sm cursor-pointer hover:text-primary transition-colors">
+              <input
+                type="checkbox"
+                checked={generateImage}
+                onChange={(e) => setGenerateImage(e.target.checked)}
+                className="rounded border-border"
+              />
+              Generate Image
+            </label>
+            
             <Select value={model} onValueChange={setModel}>
               <SelectTrigger className="w-48 h-9 bg-background/50 border-border/50">
                 <SelectValue />
