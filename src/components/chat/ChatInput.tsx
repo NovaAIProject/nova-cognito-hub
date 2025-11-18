@@ -286,7 +286,8 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
               <Button
                 onClick={handleStopGenerating}
                 size="icon"
-                className="rounded-full h-9 w-9 flex-shrink-0 bg-destructive hover:bg-destructive/90 text-white"
+                variant="ghost"
+                className="rounded-full h-9 w-9 flex-shrink-0 hover:bg-destructive/10 text-destructive"
               >
                 <Square className="w-3.5 h-3.5 fill-current" />
               </Button>
@@ -295,9 +296,10 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange }: ChatIn
                 onClick={handleSend}
                 disabled={!message.trim()}
                 size="icon"
-                className="rounded-full h-9 w-9 flex-shrink-0 bg-foreground hover:bg-foreground/90 disabled:bg-muted disabled:opacity-50 transition-colors"
+                variant="ghost"
+                className="rounded-full h-9 w-9 flex-shrink-0 hover:bg-muted disabled:opacity-40"
               >
-                <ArrowUp className="w-4 h-4 text-background" />
+                <ArrowUp className="w-4 h-4" />
               </Button>
             )}
           </div>

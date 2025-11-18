@@ -278,11 +278,11 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
               </Button>
               
               {showProfileMenu && (
-                <div className="absolute bottom-full left-0 right-0 mb-2 glass-panel rounded-lg shadow-lg p-2 space-y-1 animate-fade-in">
+                <div className="absolute bottom-full left-0 right-0 mb-2 bg-card border border-border rounded-lg shadow-xl p-2 space-y-1 animate-slide-up">
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="w-full justify-start text-xs"
+                    className="w-full justify-start text-xs hover:bg-muted"
                     onClick={() => toast.info("Profile settings coming soon!")}
                   >
                     <User className="w-3 h-3 mr-2" />
@@ -291,7 +291,7 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="w-full justify-start text-destructive hover:text-destructive text-xs"
+                    className="w-full justify-start text-destructive hover:bg-destructive/10 hover:text-destructive text-xs"
                     onClick={handleLogout}
                   >
                     <LogOut className="w-3 h-3 mr-2" />
