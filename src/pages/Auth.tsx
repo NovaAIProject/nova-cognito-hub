@@ -14,59 +14,15 @@ const Auth = () => {
   const [username, setUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [showVerification, setShowVerification] = useState(false);
-  const [verificationCode, setVerificationCode] = useState("");
   const navigate = useNavigate();
 
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!isLogin && !showVerification) {
-      // Step 1: Send verification code
+    if (!isLogin) {
+      // Sign up flow
       setLoading(true);
       try {
-        const { data, error } = await supabase.functions.invoke('send-verification-code', {
-          body: { email }
-        });
-
-        if (error) throw error;
-
-        setShowVerification(true);
-        toast.success(`Verification code sent to ${email}`);
-      } catch (error: any) {
-        toast.error(error.message);
-      } finally {
-        setLoading(false);
-      }
-      return;
-    }
-
-    if (!isLogin && showVerification) {
-      // Step 2: Verify code and create account
-      setLoading(true);
-      try {
-        // Verify the code
-        const { data: codes, error: verifyError } = await supabase
-          .from('verification_codes')
-          .select('*')
-          .eq('email', email)
-          .eq('code', verificationCode)
-          .eq('verified', false)
-          .gte('expires_at', new Date().toISOString())
-          .order('created_at', { ascending: false })
-          .limit(1);
-
-        if (verifyError || !codes || codes.length === 0) {
-          throw new Error('Invalid or expired verification code');
-        }
-
-        // Mark code as verified
-        await supabase
-          .from('verification_codes')
-          .update({ verified: true })
-          .eq('id', codes[0].id);
-
-        // Create account
         if (!username.trim()) {
           toast.error("Username is required");
           setLoading(false);
@@ -188,62 +144,40 @@ const Auth = () => {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="your@email.com"
               required
-              disabled={showVerification}
+              disabled={false}
             />
           </div>
 
-          {!showVerification && (
-            <div className="space-y-2">
-              <Label htmlFor="password" className="flex items-center gap-2">
-                <Lock className="w-4 h-4" />
-                Password
-              </Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  required
-                />
-                <Button
-                  type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="absolute right-2 top-1/2 -translate-y-1/2"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeOff className="w-4 h-4" />
-                  ) : (
-                    <Eye className="w-4 h-4" />
-                  )}
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {!isLogin && showVerification && (
-            <div className="space-y-2 animate-fade-in">
-              <Label htmlFor="code" className="flex items-center gap-2">
-                <Lock className="w-4 h-4" />
-                Verification Code
-              </Label>
+          <div className="space-y-2">
+            <Label htmlFor="password" className="flex items-center gap-2">
+              <Lock className="w-4 h-4" />
+              Password
+            </Label>
+            <div className="relative">
               <Input
-                id="code"
-                type="text"
-                value={verificationCode}
-                onChange={(e) => setVerificationCode(e.target.value)}
-                placeholder="Enter 6-digit code"
+                id="password"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
                 required
-                maxLength={6}
               />
-              <p className="text-xs text-muted-foreground">
-                Check your email for the verification code
-              </p>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="absolute right-2 top-1/2 -translate-y-1/2"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
+              </Button>
             </div>
-          )}
+          </div>
+
 
           <Button
             type="submit"
@@ -253,28 +187,22 @@ const Auth = () => {
           >
             {loading ? (
               <Loader2 className="w-4 h-4 animate-spin" />
-            ) : showVerification ? (
-              "Verify & Create Account"
             ) : isLogin ? (
               "Sign In"
             ) : (
-              "Send Verification Code"
+              "Create Account"
             )}
           </Button>
         </form>
 
         <p className="text-center text-sm text-muted-foreground mt-6">
-          {isLogin ? "Don't have an account? " : showVerification ? "Wrong email? " : "Already have an account? "}
+          {isLogin ? "Don't have an account? " : "Already have an account? "}
           <button
             type="button"
-            onClick={() => {
-              setIsLogin(!isLogin);
-              setShowVerification(false);
-              setVerificationCode("");
-            }}
+            onClick={() => setIsLogin(!isLogin)}
             className="text-primary hover:underline font-medium"
           >
-            {isLogin ? "Sign up" : showVerification ? "Go back" : "Sign in"}
+            {isLogin ? "Sign up" : "Sign in"}
           </button>
         </p>
       </div>
