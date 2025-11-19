@@ -333,10 +333,10 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
                     variant="ghost"
                     size="sm"
                     className="w-full justify-start text-xs hover:bg-muted"
-                    onClick={() => toast.info("Profile settings coming soon!")}
+                    onClick={() => navigate("/settings")}
                   >
-                    <User className="w-3 h-3 mr-2" />
-                    Profile Settings
+                    <Settings className="w-3 h-3 mr-2" />
+                    Settings
                   </Button>
                   <Button
                     variant="ghost"
