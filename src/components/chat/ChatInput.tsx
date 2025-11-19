@@ -217,28 +217,44 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
   const transcribeAudio = async (audioBlob: Blob) => {
     try {
       toast.info("Transcribing audio...");
+      console.log("Audio blob size:", audioBlob.size, "type:", audioBlob.type);
       
       const reader = new FileReader();
       reader.readAsDataURL(audioBlob);
       
       reader.onloadend = async () => {
-        const base64Audio = (reader.result as string).split(',')[1];
-        
-        const { data, error } = await supabase.functions.invoke('transcribe-audio', {
-          body: { audio: base64Audio }
-        });
+        try {
+          const base64Audio = (reader.result as string).split(',')[1];
+          console.log("Base64 audio length:", base64Audio.length);
+          
+          const { data, error } = await supabase.functions.invoke('transcribe-audio', {
+            body: { audio: base64Audio }
+          });
 
-        if (error) throw error;
+          console.log("Transcription response:", data, "Error:", error);
 
-        if (data.text) {
-          setMessage(data.text);
-          textareaRef.current?.focus();
-          toast.success("Transcription complete!");
+          if (error) throw error;
+
+          if (data?.text) {
+            setMessage(data.text);
+            textareaRef.current?.focus();
+            toast.success("Transcription complete!");
+          } else {
+            throw new Error("No text in response");
+          }
+        } catch (innerError) {
+          console.error("Inner transcription error:", innerError);
+          throw innerError;
         }
       };
-    } catch (error) {
+      
+      reader.onerror = () => {
+        console.error("FileReader error");
+        toast.error("Failed to read audio file");
+      };
+    } catch (error: any) {
       console.error("Transcription error:", error);
-      toast.error("Failed to transcribe audio");
+      toast.error(error?.message || "Failed to transcribe audio");
     }
   };
 

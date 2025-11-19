@@ -48,10 +48,11 @@ serve(async (req) => {
       throw new Error('No audio data provided');
     }
 
-    console.log('Processing audio transcription...');
+    console.log('Processing audio transcription, audio length:', audio.length);
 
     // Process audio in chunks
     const binaryAudio = processBase64Chunks(audio);
+    console.log('Binary audio size:', binaryAudio.length);
     
     // Prepare form data
     const formData = new FormData();
