@@ -48,11 +48,21 @@ const Settings = () => {
     setLoading(true);
     
     try {
-      const { error } = await supabase.auth.updateUser({ email });
+      if (!email || !email.includes('@')) {
+        throw new Error("Please enter a valid email address");
+      }
+
+      const { data, error } = await supabase.auth.updateUser({ 
+        email: email.trim() 
+      });
+      
       if (error) throw error;
-      toast.success("Email updated successfully! Please check your new email for confirmation.");
+      
+      if (data) {
+        toast.success("Email update initiated! Check both emails for confirmation links.");
+      }
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error(error.message || "Failed to update email");
     } finally {
       setLoading(false);
     }
@@ -61,6 +71,11 @@ const Settings = () => {
   const handleUpdatePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    if (!newPassword || !confirmPassword) {
+      toast.error("Please fill in all password fields");
+      return;
+    }
+
     if (newPassword !== confirmPassword) {
       toast.error("Passwords don't match");
       return;
@@ -74,15 +89,20 @@ const Settings = () => {
     setLoading(true);
     
     try {
-      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      const { data, error } = await supabase.auth.updateUser({ 
+        password: newPassword 
+      });
+      
       if (error) throw error;
       
-      toast.success("Password updated successfully!");
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
+      if (data) {
+        toast.success("Password updated successfully!");
+        setCurrentPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+      }
     } catch (error: any) {
-      toast.error(error.message);
+      toast.error(error.message || "Failed to update password");
     } finally {
       setLoading(false);
     }
