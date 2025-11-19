@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+import { Resend } from 'https://esm.sh/resend@2.0.0';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -40,9 +41,27 @@ serve(async (req) => {
       throw insertError;
     }
 
-    // In production, you would send an actual email here using a service like SendGrid, Mailgun, etc.
-    // For now, we'll just log the code (you can see it in the function logs)
-    console.log(`Verification code for ${email}: ${code}`);
+    // Send email using Resend
+    const resend = new Resend(Deno.env.get('RESEND_API_KEY'));
+    
+    const emailResponse = await resend.emails.send({
+      from: 'Nova AI <onboarding@resend.dev>',
+      to: [email],
+      subject: 'Your Verification Code',
+      html: `
+        <h1>Email Verification</h1>
+        <p>Your verification code is: <strong>${code}</strong></p>
+        <p>This code will expire in 10 minutes.</p>
+        <p>If you didn't request this code, please ignore this email.</p>
+      `,
+    });
+
+    if (emailResponse.error) {
+      console.error('Error sending email:', emailResponse.error);
+      throw new Error('Failed to send verification email');
+    }
+
+    console.log('Verification email sent successfully to:', email);
 
     // Return success
     return new Response(
