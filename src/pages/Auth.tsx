@@ -115,7 +115,7 @@ const Auth = () => {
         </div>
 
         <form onSubmit={handleEmailAuth} className="space-y-4">
-          {!isLogin && !showVerification && (
+          {!isLogin && (
             <div className="space-y-2 animate-fade-in">
               <Label htmlFor="username" className="flex items-center gap-2">
                 <User className="w-4 h-4" />
@@ -126,7 +126,7 @@ const Auth = () => {
                 type="text"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                placeholder="Choose a username"
+                placeholder="Enter your username"
                 required={!isLogin}
               />
             </div>
@@ -144,7 +144,6 @@ const Auth = () => {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="your@email.com"
               required
-              disabled={false}
             />
           </div>
 
@@ -177,7 +176,6 @@ const Auth = () => {
               </Button>
             </div>
           </div>
-
 
           <Button
             type="submit"
