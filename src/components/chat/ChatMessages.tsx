@@ -98,7 +98,9 @@ const ChatMessages = ({ chatId, isGenerating }: ChatMessagesProps) => {
     if (scrollRef.current) {
       const viewport = scrollRef.current.querySelector('[data-radix-scroll-area-viewport]');
       if (viewport) {
-        viewport.scrollTop = viewport.scrollHeight;
+        setTimeout(() => {
+          viewport.scrollTop = viewport.scrollHeight;
+        }, 100);
       }
     }
   };
