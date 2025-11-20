@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { toast } from "sonner";
 
 interface SpeechRecognitionEvent extends Event {
   results: SpeechRecognitionResultList;
@@ -13,6 +14,7 @@ export const useVoiceInput = () => {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [isSupported, setIsSupported] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
@@ -22,7 +24,7 @@ export const useVoiceInput = () => {
     if (SpeechRecognition) {
       setIsSupported(true);
       recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.continuous = false;
+      recognitionRef.current.continuous = true;
       recognitionRef.current.interimResults = true;
       recognitionRef.current.lang = 'en-US';
 
@@ -39,6 +41,23 @@ export const useVoiceInput = () => {
       recognitionRef.current.onerror = (event: SpeechRecognitionErrorEvent) => {
         console.error("Speech recognition error:", event.error);
         setIsListening(false);
+        setError(event.error);
+        
+        switch (event.error) {
+          case 'network':
+            toast.error("Network error. Please check your internet connection and try again.");
+            break;
+          case 'not-allowed':
+            toast.error("Microphone access denied. Please allow microphone access in your browser settings.");
+            break;
+          case 'no-speech':
+            toast.warning("No speech detected. Please try again and speak clearly.");
+            break;
+          case 'aborted':
+            break;
+          default:
+            toast.error(`Speech recognition error: ${event.error}`);
+        }
       };
     }
 
@@ -49,11 +68,20 @@ export const useVoiceInput = () => {
     };
   }, []);
 
-  const startListening = () => {
+  const startListening = async () => {
     if (recognitionRef.current && !isListening) {
-      setTranscript("");
-      recognitionRef.current.start();
-      setIsListening(true);
+      try {
+        await navigator.mediaDevices.getUserMedia({ audio: true });
+        
+        setTranscript("");
+        setError(null);
+        recognitionRef.current.start();
+        setIsListening(true);
+        toast.success("Listening... speak now");
+      } catch (err) {
+        toast.error("Microphone access denied. Please allow microphone access.");
+        console.error("Microphone permission error:", err);
+      }
     }
   };
 
@@ -61,6 +89,9 @@ export const useVoiceInput = () => {
     if (recognitionRef.current && isListening) {
       recognitionRef.current.stop();
       setIsListening(false);
+      if (transcript) {
+        toast.success("Voice input captured");
+      }
     }
   };
 
@@ -72,6 +103,7 @@ export const useVoiceInput = () => {
     isListening,
     transcript,
     isSupported,
+    error,
     startListening,
     stopListening,
     resetTranscript,
