@@ -9,8 +9,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowUp, Square } from "lucide-react";
+import { ArrowUp, Square, Mic, MicOff } from "lucide-react";
 import { toast } from "sonner";
+import { useVoiceInput } from "@/hooks/useVoiceInput";
 
 interface ChatInputProps {
   chatId: string | null;
@@ -26,6 +27,15 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
   const [isGenerating, setIsGenerating] = useState(false);
   const [hasSentMessage, setHasSentMessage] = useState(!!chatId);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  
+  const {
+    isListening,
+    transcript,
+    isSupported,
+    startListening,
+    stopListening,
+    resetTranscript,
+  } = useVoiceInput();
 
   // Reset UI state when chatId changes
   useEffect(() => {
@@ -40,8 +50,18 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
     }
   }, [chatId]);
 
+  // Update message when transcript changes
+  useEffect(() => {
+    if (transcript) {
+      setMessage(transcript);
+    }
+  }, [transcript]);
+
   const handleSend = async () => {
     if (!message.trim() || isGenerating) return;
+
+    // Reset voice input when sending
+    resetTranscript();
 
     setHasSentMessage(true);
     let currentChatId = chatId;
@@ -228,6 +248,24 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
               className="flex-1 resize-none border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 min-h-[48px] max-h-[48px] py-3 px-4 rounded-full overflow-hidden"
               rows={1}
             />
+
+            {isSupported && (
+              <Button
+                onClick={isListening ? stopListening : startListening}
+                size="icon"
+                variant="ghost"
+                className={`rounded-full h-9 w-9 flex-shrink-0 hover:bg-foreground/10 transition-colors ${
+                  isListening ? 'text-primary' : ''
+                }`}
+                title={isListening ? "Stop recording" : "Voice input"}
+              >
+                {isListening ? (
+                  <MicOff className="w-4 h-4 animate-pulse" />
+                ) : (
+                  <Mic className="w-4 h-4" />
+                )}
+              </Button>
+            )}
 
             {isGenerating ? (
               <Button
