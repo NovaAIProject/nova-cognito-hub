@@ -1,24 +1,34 @@
 import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Lightbulb } from "lucide-react";
 import MessageBubble from "./MessageBubble";
 
 const ThinkingIndicator = () => {
+  const [seconds, setSeconds] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSeconds(prev => prev + 1);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="flex gap-3 animate-fade-in">
       <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-primary to-accent text-white">
         <Sparkles className="w-4 h-4" />
       </div>
       <div className="glass-panel rounded-2xl px-4 py-3 bg-card/50 flex items-center gap-2">
-        <span className="text-lg">💡</span>
+        <Lightbulb className="w-4 h-4 text-muted-foreground" />
         <span 
-          className="text-sm font-medium bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-[shimmer_2s_ease-in-out_infinite] bg-[length:200%_100%]"
+          className="text-sm font-medium bg-gradient-to-r from-primary via-primary-foreground to-primary bg-clip-text text-transparent animate-[shimmer_2s_ease-in-out_infinite] bg-[length:200%_100%]"
           style={{
             backgroundSize: '200% 100%',
           }}
         >
-          Thinking
+          Thinking for {seconds}s
         </span>
       </div>
     </div>
