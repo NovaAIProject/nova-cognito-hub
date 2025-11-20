@@ -65,6 +65,7 @@ const Chat = () => {
             setSidebarOpen(false);
           }
         }}
+        onNewChat={handleNewChat}
         userId={session.user.id}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
