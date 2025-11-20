@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Copy, Check, Sparkles } from "lucide-react";
+import { Copy, Check, Sparkles, Lightbulb } from "lucide-react";
 import { toast } from "sonner";
 import ReactMarkdown from "react-markdown";
 import { supabase } from "@/integrations/supabase/client";
@@ -76,8 +76,9 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
     >
       <div className="group flex-1 space-y-2">
         {!isUser && responseTime && (
-          <div className="text-xs text-muted-foreground ml-1">
-            Thought for {responseTime}s
+          <div className="text-xs text-muted-foreground ml-1 flex items-center gap-1.5">
+            <Lightbulb className="w-3 h-3 text-muted-foreground/70" />
+            <span>Thought for {responseTime}s</span>
           </div>
         )}
         
