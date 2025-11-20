@@ -78,7 +78,7 @@ const ChatItem = ({
           <Button
             variant="ghost"
             size="sm"
-            className="h-7 w-7 p-0 flex-shrink-0 hover:bg-foreground/10 opacity-30 group-hover:opacity-100 transition-opacity duration-150"
+            className="h-7 w-7 p-0 flex-shrink-0 hover:bg-foreground/10 invisible group-hover:visible transition-all duration-150"
           >
             <MoreVertical className="w-4 h-4" />
           </Button>
