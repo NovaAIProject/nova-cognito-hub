@@ -9,9 +9,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowUp, Square, Mic, MicOff } from "lucide-react";
+import { ArrowUp, Square } from "lucide-react";
 import { toast } from "sonner";
-import { useVoiceInput } from "@/hooks/useVoiceInput";
 
 interface ChatInputProps {
   chatId: string | null;
@@ -27,15 +26,6 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
   const [isGenerating, setIsGenerating] = useState(false);
   const [hasSentMessage, setHasSentMessage] = useState(!!chatId);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  
-  const {
-    isListening,
-    transcript,
-    isSupported,
-    startListening,
-    stopListening,
-    resetTranscript,
-  } = useVoiceInput();
 
   // Reset UI state when chatId changes
   useEffect(() => {
@@ -50,18 +40,8 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
     }
   }, [chatId]);
 
-  // Update message when transcript changes
-  useEffect(() => {
-    if (transcript) {
-      setMessage(transcript);
-    }
-  }, [transcript]);
-
   const handleSend = async () => {
     if (!message.trim() || isGenerating) return;
-
-    // Reset voice input when sending
-    resetTranscript();
 
     setHasSentMessage(true);
     let currentChatId = chatId;
@@ -199,7 +179,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
 
   return (
     <div 
-      className={`w-full transition-all duration-300 ease-in-out ${
+      className={`w-full ${
         !hasSentMessage 
           ? 'fixed top-[45%] z-10 max-w-2xl px-4' 
           : 'p-4 border-t border-border bg-background'
@@ -209,19 +189,19 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
           ? {
               left: sidebarOpen ? 'calc(50% + 128px)' : '50%',
               transform: 'translate(-50%, -50%)',
-              transition: 'left 0.3s ease-in-out, transform 0.3s ease-in-out'
+              transition: 'left 0.3s ease-in-out'
             }
           : undefined
       }
     >
-      <div className={`flex flex-col gap-6 transition-all duration-300 ${!hasSentMessage ? 'items-center' : 'max-w-4xl mx-auto'}`}>
+      <div className={`flex flex-col gap-6 ${!hasSentMessage ? 'items-center' : 'max-w-4xl mx-auto'}`}>
         {!hasSentMessage && (
-          <h2 className="text-3xl font-semibold text-foreground text-center mb-2 animate-fade-in">
+          <h2 className="text-3xl font-semibold text-foreground text-center mb-2 animate-fade-in" style={{ animationDelay: '0.1s' }}>
             How can I help you?
           </h2>
         )}
 
-        <div className={`flex items-center justify-center gap-4 transition-opacity duration-300 ${!hasSentMessage ? 'opacity-100' : 'opacity-0 hidden'}`}>
+        <div className={`flex items-center justify-center gap-4 ${!hasSentMessage ? 'opacity-100 animate-fade-in' : 'opacity-0 hidden'}`} style={!hasSentMessage ? { animationDelay: '0.2s' } : undefined}>
           <Select value={model} onValueChange={setModel}>
             <SelectTrigger className="w-48 h-9 bg-background/50 border-border/50">
               <SelectValue />
@@ -237,7 +217,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
           </Select>
         </div>
 
-        <div className="w-full">
+        <div className={`w-full ${!hasSentMessage ? 'animate-fade-in' : ''}`} style={!hasSentMessage ? { animationDelay: '0.3s' } : undefined}>
           <div className="relative flex items-center gap-1.5 bg-background border border-border/50 rounded-full pr-1.5 shadow-sm hover:border-border transition-colors">
             <Textarea
               ref={textareaRef}
@@ -248,24 +228,6 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
               className="flex-1 resize-none border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 min-h-[48px] max-h-[48px] py-3 px-4 rounded-full overflow-hidden"
               rows={1}
             />
-
-            {isSupported && (
-              <Button
-                onClick={isListening ? stopListening : startListening}
-                size="icon"
-                variant="ghost"
-                className={`rounded-full h-9 w-9 flex-shrink-0 hover:bg-foreground/10 transition-colors ${
-                  isListening ? 'text-primary' : ''
-                }`}
-                title={isListening ? "Stop recording" : "Voice input"}
-              >
-                {isListening ? (
-                  <MicOff className="w-4 h-4 animate-pulse" />
-                ) : (
-                  <Mic className="w-4 h-4" />
-                )}
-              </Button>
-            )}
 
             {isGenerating ? (
               <Button
