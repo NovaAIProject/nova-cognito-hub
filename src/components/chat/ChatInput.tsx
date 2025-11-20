@@ -2,8 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
 import {
   Select,
   SelectContent,
@@ -27,15 +25,17 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
   const [model, setModel] = useState("google/gemini-2.5-flash");
   const [isGenerating, setIsGenerating] = useState(false);
   const [hasSentMessage, setHasSentMessage] = useState(!!chatId);
-  const [generateImage, setGenerateImage] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Reset UI state when chatId changes
   useEffect(() => {
+    console.log('ChatInput useEffect - chatId:', chatId);
     if (!chatId) {
+      console.log('ChatInput: Setting hasSentMessage to FALSE (new chat)');
       setHasSentMessage(false);
       setMessage("");
     } else {
+      console.log('ChatInput: Setting hasSentMessage to TRUE (existing chat)');
       setHasSentMessage(true);
     }
   }, [chatId]);
@@ -94,7 +94,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
             body: JSON.stringify({
               message: userMessage,
               model: model,
-              generateImage: generateImage,
+              generateImage: false,
               chatId: currentChatId,
             }),
         }
@@ -201,18 +201,6 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
         )}
 
         <div className={`flex items-center justify-center gap-4 ${!hasSentMessage ? 'opacity-100' : 'opacity-0 hidden'}`}>
-          <div className="flex items-center gap-2">
-            <Switch
-              id="generate-image"
-              checked={generateImage}
-              onCheckedChange={setGenerateImage}
-              className="scale-90"
-            />
-            <Label htmlFor="generate-image" className="text-sm cursor-pointer">
-              Generate Image
-            </Label>
-          </div>
-          
           <Select value={model} onValueChange={setModel}>
             <SelectTrigger className="w-48 h-9 bg-background/50 border-border/50">
               <SelectValue />
@@ -265,18 +253,6 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
 
         {hasSentMessage && (
           <div className="flex items-center justify-center gap-4">
-            <div className="flex items-center gap-2">
-              <Switch
-                id="generate-image-bottom"
-                checked={generateImage}
-                onCheckedChange={setGenerateImage}
-                className="scale-90"
-              />
-              <Label htmlFor="generate-image-bottom" className="text-sm cursor-pointer">
-                Generate Image
-              </Label>
-            </div>
-            
             <Select value={model} onValueChange={setModel}>
               <SelectTrigger className="w-48 h-9 bg-background/50 border-border/50">
                 <SelectValue />

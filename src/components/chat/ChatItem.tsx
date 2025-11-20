@@ -51,7 +51,7 @@ const ChatItem = ({
       }`}
       onClick={onSelect}
     >
-      <div className="flex items-center gap-2 flex-1 min-w-0 overflow-hidden mr-1">
+      <div className="flex items-center gap-2 flex-1 min-w-0 mr-1">
         {chat.pinned && <Pin className="w-3 h-3 text-primary flex-shrink-0" />}
         <MessageSquare className="w-4 h-4 flex-shrink-0" />
       
@@ -78,7 +78,7 @@ const ChatItem = ({
           <Button
             variant="ghost"
             size="sm"
-            className="h-7 w-7 p-0 flex-shrink-0 hover:bg-foreground/10"
+            className="h-7 w-7 p-0 flex-shrink-0 hover:bg-foreground/10 opacity-100"
           >
             <MoreVertical className="w-4 h-4" />
           </Button>
