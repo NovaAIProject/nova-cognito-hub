@@ -246,11 +246,20 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
           console.log("Transcription response:", data, "Error:", error);
 
           if (error) {
-            if (error.message?.includes('network') && retryCount < MAX_RETRIES) {
+            // Handle specific error types
+            const errorMessage = error.message?.toLowerCase() || '';
+            
+            if (errorMessage.includes('quota') || errorMessage.includes('insufficient_quota')) {
+              toast.error("Voice transcription service quota exceeded. Please contact support or try again later.", { duration: 5000 });
+              return;
+            }
+            
+            if (errorMessage.includes('network') && retryCount < MAX_RETRIES) {
               toast.info(`Network error. Retrying... (${retryCount + 1}/${MAX_RETRIES})`);
               setTimeout(() => transcribeAudio(audioBlob, retryCount + 1), 1500);
               return;
             }
+            
             throw error;
           }
 
@@ -263,11 +272,18 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
           }
         } catch (innerError: any) {
           console.error("Inner transcription error:", innerError);
+          const errorMsg = innerError.message?.toLowerCase() || '';
+          
+          if (errorMsg.includes('quota') || errorMsg.includes('insufficient_quota')) {
+            toast.error("Voice transcription service quota exceeded. Please contact support.", { duration: 5000 });
+            return;
+          }
+          
           if (retryCount < MAX_RETRIES) {
             toast.info(`Retrying transcription... (${retryCount + 1}/${MAX_RETRIES})`);
             setTimeout(() => transcribeAudio(audioBlob, retryCount + 1), 1500);
           } else {
-            toast.error("Unable to transcribe audio after multiple attempts. Please try again or type your message.");
+            toast.error("Unable to transcribe audio. Please type your message instead.", { duration: 4000 });
           }
         }
       };
@@ -278,11 +294,18 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
       };
     } catch (error: any) {
       console.error("Transcription error:", error);
+      const errorMsg = error.message?.toLowerCase() || '';
+      
+      if (errorMsg.includes('quota') || errorMsg.includes('insufficient_quota')) {
+        toast.error("Voice transcription service unavailable. Please type your message.", { duration: 5000 });
+        return;
+      }
+      
       if (retryCount < MAX_RETRIES) {
         toast.info(`Retrying... (${retryCount + 1}/${MAX_RETRIES})`);
         setTimeout(() => transcribeAudio(audioBlob, retryCount + 1), 1500);
       } else {
-        toast.error("Transcription failed. Please check your connection and try again.");
+        toast.error("Transcription failed. Please type your message instead.", { duration: 4000 });
       }
     }
   };
