@@ -10,8 +10,7 @@ const ThinkingIndicator = () => {
       <div className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 bg-gradient-to-br from-primary to-accent text-white">
         <Sparkles className="w-4 h-4" />
       </div>
-      <div className="glass-panel rounded-2xl px-4 py-3 bg-card/50 flex items-center gap-2">
-        <Lightbulb className="w-3 h-3 text-muted-foreground/70" />
+      <div className="glass-panel rounded-2xl px-4 py-3 bg-card/50">
         <span 
           className="text-sm font-medium bg-gradient-to-r from-primary via-primary-foreground to-primary bg-clip-text text-transparent animate-[shimmer_3s_ease-in-out_infinite] bg-[length:200%_100%]"
           style={{
