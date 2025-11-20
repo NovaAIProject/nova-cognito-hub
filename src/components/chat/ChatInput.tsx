@@ -35,9 +35,10 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
-  // Reset hasSentMessage when chatId changes
+  // Reset UI state when chatId changes
   useEffect(() => {
-    setHasSentMessage(!!chatId);
+    const shouldShowWelcome = !chatId;
+    setHasSentMessage(!shouldShowWelcome);
   }, [chatId]);
 
   const handleSend = async () => {
