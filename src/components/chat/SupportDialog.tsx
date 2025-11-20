@@ -61,58 +61,64 @@ const SupportDialog = ({ open, onOpenChange }: SupportDialogProps) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[480px]">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">Contact Support</DialogTitle>
-          <DialogDescription className="text-sm text-muted-foreground">
-            We're here to help. Send us a message and we'll respond shortly.
+      <DialogContent className="sm:max-w-[500px] border-border/50">
+        <DialogHeader className="space-y-3">
+          <DialogTitle className="text-2xl font-semibold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            Contact Support
+          </DialogTitle>
+          <DialogDescription className="text-muted-foreground leading-relaxed">
+            Have a question or need assistance? We're here to help you 24/7.
           </DialogDescription>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="space-y-5 mt-4">
-          <div className="space-y-2">
-            <Label htmlFor="subject" className="text-sm font-medium">Subject</Label>
+        <form onSubmit={handleSubmit} className="space-y-6 mt-2">
+          <div className="space-y-2.5">
+            <Label htmlFor="subject" className="text-sm font-medium text-foreground">
+              Subject
+            </Label>
             <Input
               id="subject"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
-              placeholder="What can we help you with?"
-              className="h-10"
+              placeholder="Brief description of your issue"
+              className="h-11 bg-background/50 border-border/50 focus:border-primary transition-colors"
               required
             />
           </div>
           
-          <div className="space-y-2">
-            <Label htmlFor="message" className="text-sm font-medium">Message</Label>
+          <div className="space-y-2.5">
+            <Label htmlFor="message" className="text-sm font-medium text-foreground">
+              Message
+            </Label>
             <Textarea
               id="message"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Tell us more about your question or issue..."
-              className="min-h-[140px] resize-none"
+              placeholder="Describe your question or issue in detail..."
+              className="min-h-[160px] resize-none bg-background/50 border-border/50 focus:border-primary transition-colors"
               required
             />
           </div>
           
-          <div className="flex gap-3 justify-end pt-2">
+          <div className="flex gap-3 justify-end pt-4">
             <Button
               type="button"
-              variant="ghost"
+              variant="outline"
               onClick={() => onOpenChange(false)}
               disabled={loading}
-              className="hover:bg-foreground/10"
+              className="hover:bg-foreground/5 border-border/50"
             >
               Cancel
             </Button>
             <Button
               type="submit"
               disabled={loading}
-              className="bg-primary hover:bg-primary/90 min-w-[120px]"
+              className="bg-gradient-to-r from-primary to-accent hover:opacity-90 min-w-[140px] transition-opacity"
             >
               {loading ? (
                 <>
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Sending
+                  Sending...
                 </>
               ) : (
                 "Send Message"
