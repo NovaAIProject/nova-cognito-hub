@@ -11,7 +11,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { ArrowUp, Square, Mic, MicOff, Paperclip, X } from "lucide-react";
+import { ArrowUp, Square, Paperclip, X } from "lucide-react";
 import { toast } from "sonner";
 
 interface ChatInputProps {
@@ -26,18 +26,19 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
   const [message, setMessage] = useState("");
   const [model, setModel] = useState("google/gemini-2.5-flash");
   const [isGenerating, setIsGenerating] = useState(false);
-  const [isRecording, setIsRecording] = useState(false);
   const [hasSentMessage, setHasSentMessage] = useState(!!chatId);
   const [generateImage, setGenerateImage] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
 
   // Reset UI state when chatId changes
   useEffect(() => {
     setHasSentMessage(!!chatId);
+    if (!chatId) {
+      setMessage("");
+      setUploadedFile(null);
+    }
   }, [chatId]);
 
   const handleSend = async () => {
@@ -177,138 +178,6 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
     toast.info("Generation stopped");
   };
 
-  const startRecording = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const mediaRecorder = new MediaRecorder(stream);
-      mediaRecorderRef.current = mediaRecorder;
-      audioChunksRef.current = [];
-
-      mediaRecorder.ondataavailable = (event) => {
-        if (event.data.size > 0) {
-          audioChunksRef.current.push(event.data);
-        }
-      };
-
-      mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-        await transcribeAudio(audioBlob);
-        stream.getTracks().forEach(track => track.stop());
-      };
-
-      mediaRecorder.start();
-      setIsRecording(true);
-      toast.success("Recording started - speak now", { duration: 2000 });
-    } catch (error: any) {
-      console.error("Error starting recording:", error);
-      if (error.name === 'NotAllowedError') {
-        toast.error("Microphone access denied. Please allow microphone access in your browser settings.");
-      } else if (error.name === 'NotFoundError') {
-        toast.error("No microphone found. Please connect a microphone and try again.");
-      } else {
-        toast.error("Unable to access microphone. Please check your device settings.");
-      }
-    }
-  };
-
-  const stopRecording = () => {
-    if (mediaRecorderRef.current && isRecording) {
-      mediaRecorderRef.current.stop();
-      setIsRecording(false);
-      toast.info("Processing your recording...", { duration: 1500 });
-    }
-  };
-
-  const transcribeAudio = async (audioBlob: Blob, retryCount = 0) => {
-    const MAX_RETRIES = 2;
-    
-    try {
-      if (audioBlob.size < 1000) {
-        toast.error("Recording too short. Please speak for at least 1 second.");
-        return;
-      }
-
-      toast.info("Transcribing your speech...", { duration: 2000 });
-      console.log("Audio blob size:", audioBlob.size, "type:", audioBlob.type);
-      
-      const reader = new FileReader();
-      reader.readAsDataURL(audioBlob);
-      
-      reader.onloadend = async () => {
-        try {
-          const base64Audio = (reader.result as string).split(',')[1];
-          console.log("Base64 audio length:", base64Audio.length);
-          
-          const { data, error } = await supabase.functions.invoke('transcribe-audio', {
-            body: { audio: base64Audio }
-          });
-
-          console.log("Transcription response:", data, "Error:", error);
-
-          if (error) {
-            // Handle specific error types
-            const errorMessage = error.message?.toLowerCase() || '';
-            
-            if (errorMessage.includes('quota') || errorMessage.includes('insufficient_quota')) {
-              toast.error("Voice transcription service quota exceeded. Please contact support or try again later.", { duration: 5000 });
-              return;
-            }
-            
-            if (errorMessage.includes('network') && retryCount < MAX_RETRIES) {
-              toast.info(`Network error. Retrying... (${retryCount + 1}/${MAX_RETRIES})`);
-              setTimeout(() => transcribeAudio(audioBlob, retryCount + 1), 1500);
-              return;
-            }
-            
-            throw error;
-          }
-
-          if (data?.text) {
-            setMessage(data.text);
-            textareaRef.current?.focus();
-            toast.success("Transcription complete!", { duration: 2000 });
-          } else {
-            throw new Error("No transcription returned");
-          }
-        } catch (innerError: any) {
-          console.error("Inner transcription error:", innerError);
-          const errorMsg = innerError.message?.toLowerCase() || '';
-          
-          if (errorMsg.includes('quota') || errorMsg.includes('insufficient_quota')) {
-            toast.error("Voice transcription service quota exceeded. Please contact support.", { duration: 5000 });
-            return;
-          }
-          
-          if (retryCount < MAX_RETRIES) {
-            toast.info(`Retrying transcription... (${retryCount + 1}/${MAX_RETRIES})`);
-            setTimeout(() => transcribeAudio(audioBlob, retryCount + 1), 1500);
-          } else {
-            toast.error("Unable to transcribe audio. Please type your message instead.", { duration: 4000 });
-          }
-        }
-      };
-      
-      reader.onerror = () => {
-        console.error("FileReader error");
-        toast.error("Failed to process audio recording. Please try again.");
-      };
-    } catch (error: any) {
-      console.error("Transcription error:", error);
-      const errorMsg = error.message?.toLowerCase() || '';
-      
-      if (errorMsg.includes('quota') || errorMsg.includes('insufficient_quota')) {
-        toast.error("Voice transcription service unavailable. Please type your message.", { duration: 5000 });
-        return;
-      }
-      
-      if (retryCount < MAX_RETRIES) {
-        toast.info(`Retrying... (${retryCount + 1}/${MAX_RETRIES})`);
-        setTimeout(() => transcribeAudio(audioBlob, retryCount + 1), 1500);
-      } else {
-        toast.error("Transcription failed. Please type your message instead.", { duration: 4000 });
-      }
-    }
-  };
 
   return (
     <div 
@@ -412,19 +281,6 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
               className="rounded-full h-9 w-9 flex-shrink-0 transition-colors hover:bg-foreground/10"
             >
               <Paperclip className="w-4 h-4" />
-            </Button>
-            
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={isRecording ? stopRecording : startRecording}
-              className={`rounded-full h-9 w-9 flex-shrink-0 transition-all duration-300 hover:bg-foreground/10 ${
-                isRecording 
-                  ? 'bg-primary/10 scale-110 animate-pulse' 
-                  : ''
-              }`}
-            >
-              {isRecording ? <MicOff className="w-4 h-4 text-primary" /> : <Mic className="w-4 h-4" />}
             </Button>
 
             {isGenerating ? (
