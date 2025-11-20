@@ -44,14 +44,14 @@ const ChatItem = ({
 
   return (
     <div
-      className={`group flex items-center gap-2 p-2.5 rounded-lg mb-1 smooth-transition cursor-pointer ${
+      className={`group flex items-center justify-between p-2.5 rounded-lg mb-1 smooth-transition cursor-pointer ${
         isActive
           ? "bg-primary/10 border border-primary/20"
           : "hover:bg-secondary/50"
       }`}
       onClick={onSelect}
     >
-      <div className="flex items-center gap-2 min-w-0 mr-1">
+      <div className="flex items-center gap-2 min-w-0 flex-1 mr-2">
         {chat.pinned && <Pin className="w-3 h-3 text-primary flex-shrink-0" />}
         <MessageSquare className="w-4 h-4 flex-shrink-0" />
       
