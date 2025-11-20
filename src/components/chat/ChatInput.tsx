@@ -35,11 +35,9 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
-  // Reset hasSentMessage when chatId changes to null (new chat)
+  // Reset hasSentMessage when chatId changes
   useEffect(() => {
-    if (!chatId) {
-      setHasSentMessage(false);
-    }
+    setHasSentMessage(!!chatId);
   }, [chatId]);
 
   const handleSend = async () => {
@@ -260,7 +258,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
 
   return (
     <div 
-      className={`w-full transition-all duration-300 ${
+      className={`w-full ${
         !hasSentMessage 
           ? 'fixed top-[45%] z-10 max-w-2xl px-4' 
           : 'p-4 border-t border-border bg-background'
