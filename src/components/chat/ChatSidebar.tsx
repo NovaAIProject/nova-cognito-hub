@@ -21,12 +21,13 @@ interface Chat {
 interface ChatSidebarProps {
   currentChatId: string | null;
   onChatSelect: (id: string) => void;
+  onNewChat: () => void;
   userId: string;
   isOpen: boolean;
   onClose: () => void;
 }
 
-const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: ChatSidebarProps) => {
+const ChatSidebar = ({ currentChatId, onChatSelect, onNewChat, userId, isOpen, onClose }: ChatSidebarProps) => {
   const [chats, setChats] = useState<Chat[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [darkMode, setDarkMode] = useState(false);
@@ -227,7 +228,7 @@ const ChatSidebar = ({ currentChatId, onChatSelect, userId, isOpen, onClose }: C
             </div>
             
             <Button
-              onClick={handleNewChat}
+              onClick={onNewChat}
               className="w-full justify-start gap-2 bg-transparent border border-border/50 hover:bg-muted/50 hover:border-border mb-3 text-foreground"
             >
               <Plus className="w-4 h-4" />
