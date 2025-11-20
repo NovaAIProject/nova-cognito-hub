@@ -37,8 +37,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
 
   // Reset UI state when chatId changes
   useEffect(() => {
-    const shouldShowWelcome = !chatId;
-    setHasSentMessage(!shouldShowWelcome);
+    setHasSentMessage(!!chatId);
   }, [chatId]);
 
   const handleSend = async () => {
@@ -365,9 +364,13 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
               variant="ghost"
               size="icon"
               onClick={isRecording ? stopRecording : startRecording}
-              className={`rounded-full h-9 w-9 flex-shrink-0 transition-colors hover:bg-foreground/10 ${isRecording ? 'bg-destructive/20 text-destructive hover:bg-destructive/30' : ''}`}
+              className={`rounded-full h-9 w-9 flex-shrink-0 transition-all duration-300 hover:bg-foreground/10 ${
+                isRecording 
+                  ? 'bg-primary/10 scale-110 animate-pulse' 
+                  : ''
+              }`}
             >
-              {isRecording ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
+              {isRecording ? <MicOff className="w-4 h-4 text-primary" /> : <Mic className="w-4 h-4" />}
             </Button>
 
             {isGenerating ? (
