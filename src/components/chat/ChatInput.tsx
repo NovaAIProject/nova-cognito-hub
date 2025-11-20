@@ -198,10 +198,16 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
 
       mediaRecorder.start();
       setIsRecording(true);
-      toast.info("Recording started...");
-    } catch (error) {
+      toast.success("Recording started - speak now", { duration: 2000 });
+    } catch (error: any) {
       console.error("Error starting recording:", error);
-      toast.error("Failed to start recording");
+      if (error.name === 'NotAllowedError') {
+        toast.error("Microphone access denied. Please allow microphone access in your browser settings.");
+      } else if (error.name === 'NotFoundError') {
+        toast.error("No microphone found. Please connect a microphone and try again.");
+      } else {
+        toast.error("Unable to access microphone. Please check your device settings.");
+      }
     }
   };
 
@@ -209,12 +215,20 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
     if (mediaRecorderRef.current && isRecording) {
       mediaRecorderRef.current.stop();
       setIsRecording(false);
+      toast.info("Processing your recording...", { duration: 1500 });
     }
   };
 
-  const transcribeAudio = async (audioBlob: Blob) => {
+  const transcribeAudio = async (audioBlob: Blob, retryCount = 0) => {
+    const MAX_RETRIES = 2;
+    
     try {
-      toast.info("Transcribing audio...");
+      if (audioBlob.size < 1000) {
+        toast.error("Recording too short. Please speak for at least 1 second.");
+        return;
+      }
+
+      toast.info("Transcribing your speech...", { duration: 2000 });
       console.log("Audio blob size:", audioBlob.size, "type:", audioBlob.type);
       
       const reader = new FileReader();
@@ -231,28 +245,45 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
 
           console.log("Transcription response:", data, "Error:", error);
 
-          if (error) throw error;
+          if (error) {
+            if (error.message?.includes('network') && retryCount < MAX_RETRIES) {
+              toast.info(`Network error. Retrying... (${retryCount + 1}/${MAX_RETRIES})`);
+              setTimeout(() => transcribeAudio(audioBlob, retryCount + 1), 1500);
+              return;
+            }
+            throw error;
+          }
 
           if (data?.text) {
             setMessage(data.text);
             textareaRef.current?.focus();
-            toast.success("Transcription complete!");
+            toast.success("Transcription complete!", { duration: 2000 });
           } else {
-            throw new Error("No text in response");
+            throw new Error("No transcription returned");
           }
-        } catch (innerError) {
+        } catch (innerError: any) {
           console.error("Inner transcription error:", innerError);
-          throw innerError;
+          if (retryCount < MAX_RETRIES) {
+            toast.info(`Retrying transcription... (${retryCount + 1}/${MAX_RETRIES})`);
+            setTimeout(() => transcribeAudio(audioBlob, retryCount + 1), 1500);
+          } else {
+            toast.error("Unable to transcribe audio after multiple attempts. Please try again or type your message.");
+          }
         }
       };
       
       reader.onerror = () => {
         console.error("FileReader error");
-        toast.error("Failed to read audio file");
+        toast.error("Failed to process audio recording. Please try again.");
       };
     } catch (error: any) {
       console.error("Transcription error:", error);
-      toast.error(error?.message || "Failed to transcribe audio");
+      if (retryCount < MAX_RETRIES) {
+        toast.info(`Retrying... (${retryCount + 1}/${MAX_RETRIES})`);
+        setTimeout(() => transcribeAudio(audioBlob, retryCount + 1), 1500);
+      } else {
+        toast.error("Transcription failed. Please check your connection and try again.");
+      }
     }
   };
 
