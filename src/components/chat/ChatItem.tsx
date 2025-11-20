@@ -44,14 +44,14 @@ const ChatItem = ({
 
   return (
     <div
-      className={`group flex items-center gap-2 p-2 pr-1 rounded-lg mb-1 smooth-transition cursor-pointer ${
+      className={`group flex items-center gap-2 p-2.5 rounded-lg mb-1 smooth-transition cursor-pointer ${
         isActive
           ? "bg-primary/10 border border-primary/20"
           : "hover:bg-secondary/50"
       }`}
       onClick={onSelect}
     >
-      <div className="flex items-center gap-2 flex-1 min-w-0 overflow-hidden">
+      <div className="flex items-center gap-2 flex-1 min-w-0 overflow-hidden mr-1">
         {chat.pinned && <Pin className="w-3 h-3 text-primary flex-shrink-0" />}
         <MessageSquare className="w-4 h-4 flex-shrink-0" />
       
@@ -69,7 +69,7 @@ const ChatItem = ({
           onClick={(e) => e.stopPropagation()}
         />
       ) : (
-        <span className="flex-1 truncate text-sm pr-2">{chat.title}</span>
+        <span className="flex-1 truncate text-sm">{chat.title}</span>
       )}
       </div>
 
@@ -78,12 +78,12 @@ const ChatItem = ({
           <Button
             variant="ghost"
             size="sm"
-            className="opacity-60 group-hover:opacity-100 hover:opacity-100 h-8 w-8 p-0 flex-shrink-0 hover:bg-foreground/10"
+            className="opacity-0 group-hover:opacity-100 h-7 w-7 p-0 flex-shrink-0 hover:bg-foreground/10 transition-opacity"
           >
             <MoreVertical className="w-4 h-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent align="end" className="w-44">
           <DropdownMenuItem onClick={onTogglePin}>
             {chat.pinned ? (
               <>

@@ -19,15 +19,42 @@ const changelogs = [
   {
     version: "1.0.0",
     changes: [
-      "Image generation capability",
-      "Voice-to-text speech input",
-      "User profile management",
-      "Contact Support system",
-      "Automatic chat title generation",
-      "Multiple AI model selection",
-      "Dark and light theme modes",
-      "Conversation history and search",
-      "Model comparison guide"
+      { 
+        title: "Image Generation", 
+        description: "Create stunning AI-generated images from text descriptions" 
+      },
+      { 
+        title: "Voice Input", 
+        description: "Convert speech to text with our voice-to-text feature" 
+      },
+      { 
+        title: "Profile Management", 
+        description: "Customize your profile settings and preferences" 
+      },
+      { 
+        title: "Support System", 
+        description: "Get help anytime with our integrated support chat" 
+      },
+      { 
+        title: "Smart Titles", 
+        description: "Automatic chat title generation based on context" 
+      },
+      { 
+        title: "Multiple AI Models", 
+        description: "Choose from Gemini, GPT-5, and more powerful models" 
+      },
+      { 
+        title: "Theme Modes", 
+        description: "Seamlessly switch between dark and light themes" 
+      },
+      { 
+        title: "Chat History", 
+        description: "Search and organize your conversation history" 
+      },
+      { 
+        title: "Model Guide", 
+        description: "Compare AI models to choose the best for your needs" 
+      }
     ]
   }
 ];
@@ -44,28 +71,44 @@ const ChangelogDialog = ({ open, onOpenChange }: ChangelogDialogProps) => {
           What's New
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[80vh]">
-        <DialogHeader>
-          <DialogTitle className="text-2xl font-bold">Changelog</DialogTitle>
-          <DialogDescription>
-            Recent updates and improvements to Nova AI
+      <DialogContent className="max-w-3xl max-h-[85vh] border-border/50">
+        <DialogHeader className="space-y-3 pb-4 border-b border-border/30">
+          <DialogTitle className="text-3xl font-bold bg-gradient-to-r from-primary via-primary/80 to-accent bg-clip-text text-transparent font-poppins">
+            What's New
+          </DialogTitle>
+          <DialogDescription className="text-base text-muted-foreground">
+            Discover the latest features and improvements
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="h-[500px] pr-4">
-          <div className="space-y-6">
+        <ScrollArea className="h-[520px] pr-4">
+          <div className="space-y-8 pt-6">
             {changelogs.map((log) => (
-              <div key={log.version} className="border-b border-border pb-4 last:border-0">
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="text-xl font-semibold">v{log.version}</span>
+              <div key={log.version} className="space-y-6">
+                <div className="flex items-center gap-3">
+                  <div className="px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20">
+                    <span className="text-lg font-bold text-primary font-poppins">v{log.version}</span>
+                  </div>
                 </div>
-                <ul className="space-y-2">
+                <div className="grid gap-4">
                   {log.changes.map((change, index) => (
-                    <li key={index} className="flex items-start gap-2 text-sm">
-                      <span className="text-primary mt-1">•</span>
-                      <span>{change}</span>
-                    </li>
+                    <div 
+                      key={index} 
+                      className="group p-4 rounded-xl bg-card/50 border border-border/50 hover:border-primary/30 hover:bg-card/80 transition-all duration-200"
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="mt-1 w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
+                        <div className="flex-1 space-y-1">
+                          <h4 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                            {change.title}
+                          </h4>
+                          <p className="text-sm text-muted-foreground leading-relaxed">
+                            {change.description}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
             ))}
           </div>

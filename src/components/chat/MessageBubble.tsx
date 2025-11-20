@@ -89,9 +89,19 @@ const MessageBubble = ({ message }: MessageBubbleProps) => {
               : "bg-card/50 mr-auto max-w-[90%]"
           }`}
         >
-          <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:mt-4 prose-headings:mb-2 prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-p:my-2 prose-pre:bg-secondary/50 prose-pre:p-4 prose-pre:rounded-xl prose-pre:overflow-x-auto prose-pre:border prose-pre:border-border prose-code:text-sm prose-code:before:content-none prose-code:after:content-none prose-strong:font-bold prose-strong:text-foreground prose-img:rounded-lg prose-img:shadow-lg">
+          <div className="prose prose-sm dark:prose-invert max-w-none prose-headings:mt-4 prose-headings:mb-2 prose-headings:font-bold prose-h1:text-2xl prose-h2:text-xl prose-h3:text-lg prose-p:my-2 prose-pre:bg-secondary/50 prose-pre:p-4 prose-pre:rounded-xl prose-pre:overflow-x-auto prose-pre:border prose-pre:border-border prose-code:text-sm prose-code:before:content-none prose-code:after:content-none prose-strong:font-bold prose-strong:text-foreground prose-img:rounded-lg prose-img:shadow-lg prose-img:max-w-full">
             <ReactMarkdown
               components={{
+                img: ({ src, alt }) => (
+                  <div className="my-4 rounded-xl overflow-hidden border border-border/50 bg-card/30">
+                    <img 
+                      src={src} 
+                      alt={alt || "Generated image"} 
+                      className="w-full h-auto object-contain max-h-[600px]"
+                      loading="lazy"
+                    />
+                  </div>
+                ),
                 code: ({ node, inline, className, children, ...props }: any) => {
                   const match = /language-(\w+)/.exec(className || '');
                   const language = match ? match[1] : '';
