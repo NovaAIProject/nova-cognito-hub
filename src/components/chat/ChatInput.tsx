@@ -179,7 +179,7 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
 
   return (
     <div 
-      className={`w-full ${
+      className={`w-full transition-all duration-300 ease-in-out ${
         !hasSentMessage 
           ? 'fixed top-[45%] z-10 max-w-2xl px-4' 
           : 'p-4 border-t border-border bg-background'
@@ -189,18 +189,19 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
           ? {
               left: sidebarOpen ? 'calc(50% + 128px)' : '50%',
               transform: 'translate(-50%, -50%)',
+              transition: 'left 0.3s ease-in-out, transform 0.3s ease-in-out'
             }
           : undefined
       }
     >
-      <div className={`flex flex-col gap-6 ${!hasSentMessage ? 'items-center' : 'max-w-4xl mx-auto'}`}>
+      <div className={`flex flex-col gap-6 transition-all duration-300 ${!hasSentMessage ? 'items-center' : 'max-w-4xl mx-auto'}`}>
         {!hasSentMessage && (
-          <h2 className="text-3xl font-semibold text-foreground text-center mb-2">
+          <h2 className="text-3xl font-semibold text-foreground text-center mb-2 animate-fade-in">
             How can I help you?
           </h2>
         )}
 
-        <div className={`flex items-center justify-center gap-4 ${!hasSentMessage ? 'opacity-100' : 'opacity-0 hidden'}`}>
+        <div className={`flex items-center justify-center gap-4 transition-opacity duration-300 ${!hasSentMessage ? 'opacity-100' : 'opacity-0 hidden'}`}>
           <Select value={model} onValueChange={setModel}>
             <SelectTrigger className="w-48 h-9 bg-background/50 border-border/50">
               <SelectValue />

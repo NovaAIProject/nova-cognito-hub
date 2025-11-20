@@ -207,13 +207,13 @@ const ChatSidebar = ({ currentChatId, onChatSelect, onNewChat, userId, isOpen, o
       )}
       
       {/* Sidebar */}
-      <aside className={`
-        ${isOpen ? 'w-64 translate-x-0' : 'w-0 -translate-x-full md:w-0'}
-        border-r border-border glass-panel flex flex-col
-        transition-all duration-300 ease-in-out
-        overflow-hidden
-        fixed md:relative z-50 h-full
-      `}>
+    <aside className={`
+      ${isOpen ? 'w-64 translate-x-0 animate-slide-in-right' : 'w-0 -translate-x-full md:w-0'}
+      border-r border-border glass-panel flex flex-col
+      transition-all duration-300 ease-in-out
+      overflow-hidden
+      fixed md:relative z-50 h-full
+    `}>
         <div className="flex flex-col h-full w-64">{/* Fixed width content */}
           {/* Header with Logo */}
           <div className="p-4 border-b border-border">
