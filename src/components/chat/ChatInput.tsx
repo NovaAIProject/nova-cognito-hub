@@ -91,17 +91,28 @@ const ChatInput = ({ chatId, onChatCreated, userId, onGeneratingChange, sidebarO
             "Content-Type": "application/json",
             Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
           },
-            body: JSON.stringify({
-              message: userMessage,
-              model: model,
-              generateImage: false,
-              chatId: currentChatId,
-            }),
+          body: JSON.stringify({
+            message: userMessage,
+            model: model,
+            generateImage: false,
+            chatId: currentChatId,
+          }),
         }
       );
 
       if (!response.ok) {
-        throw new Error("Failed to get AI response");
+        let errorMessage = "Failed to get AI response";
+        try {
+          const errorData = await response.json();
+          if (response.status === 429) {
+            errorMessage = errorData.error || "Rate limit exceeded. Please try again in a moment.";
+          } else if (response.status === 402) {
+            errorMessage = errorData.error || "AI credits are exhausted. Please add credits to continue.";
+          }
+        } catch {
+          // Ignore JSON parse errors and fall back to default message
+        }
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
